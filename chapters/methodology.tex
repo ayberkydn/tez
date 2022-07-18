@@ -1,0 +1,108 @@
+\chapter{User Experiment}
+\label{chp:b3}
+In this chapter, the details of the user experiment are presented.
+In this work, we address the problem of creating targeted adversarial examples without adversarial perturbation being perceptible by human vision. To obtain this, we use a modified version of Spatially Transformed Adversarial Examples~\cite{xiao2018spatially} that perturbs the input image only in the channels that human vision is not sensitive to the spatial information loss. For this purpose, we use \(YC_{b}C_{r}\) and CIELAB colorspace representations of the input image. The proposed adversarial example generation method is as follows. Let \(x \in \mathbb{R}^{3\times H \times W}\) be the 3-channel input image, where \(H, W\) are the height and the width of the image, respectively. First, we randomly initialize a flow field \(f \in \mathbb{R}^{2\times H \times W}\) where a two-dimensional vector exists for each pixel location of the adversarial image \(x_{adv}\). Then, we apply the flow field to the benign image as explained below to obtain the adversarial image. Then, we feed the adversarial image to the target network and backpropagate the loss gradient to the flow field. Since the flow field application is a differentiable process, it can be optimized by stochastic gradient descent and variants such as Adam~\cite{kingma2015adam} or L-BFGS\cite{liu1989limited}. The optimization process is repeated until the attack is successful or the maximum iteration count is reached.
+\RestyleAlgo{ruled}
+\begin{algorithm}[t]
+    \caption{Adversarial example generation by spatial transformation in chrominance channels in a perceptual colorspace. }\label{alg1}
+    \KwIn{   \(x\)}
+    \KwOut{   \(x_{adv}\)}
+    \KwData{
+        target\_class,
+        model,
+        \(\kappa\),
+        colorspace,
+        max\_iters,
+        is\_restricted,
+    }
+    \(f \gets initialize flow field f\)\;
+    \(i \gets 0\);
+
+    \While{\(i < max\_iters\)}{
+    \If{\(colorspace == YC_{b}C_{r}\)}{
+    \(x_{color} \gets to\_ycbcr(x)\)\;
+    }
+    \If{\(colorspace == CIELAB\)}{
+        \(x_{color} \gets to\_lab(x)\)\;
+    }
+    \(x_{luma}, x_{chroma} \gets splitchannels(x_{color})\)\;
+    \If{is\_restricted}{\(f \gets \tanh(f)\)}
+    \(x_{chroma} \gets apply\_flow(x_{chroma}, f)\)\;
+    \(x_{adv} \gets concat(x_{luma}, x_{chroma})\)\;
+    \(x_{adv} \gets to\_rgb(x_{adv})\)\;
+    \(adv\_scores = model(x_{adv})\)\;
+    \(loss \gets loss\_fn(adv\_scores, target\_class, \kappa)\)\;
+    \eIf{\(loss \leq \kappa\)}
+    {\Return{\(x_{adv}\)}\;}
+    {
+
+        \(backprop(loss)\)\;
+        \(update(f)\)\;
+        \(i \gets i + 1\)\;
+    }
+    }
+\end{algorithm}
+
+
+\subsection{Application of flow field}
+Flow field is applied to the benign image following the methodology in~\cite{xiao2018spatially}. For each pixel in adversarial image \(i_{adv}\), corresponding flow field vector value \(p_{i,j}\) is added to the pixel location. Then, the corresponding pixel at the added location is sampled. Since the added location is not an integer, bilinear interpolation is used to sample from the fractional pixel locations. Bilinear interpolation also makes the method end-to-end differentiable, thus optimizable by gradient based optimizers.
+%\subsubsection{Restricting the flow field}
+Chroma subsampling effectively causes the same chroma values to be used by the neighboring pixels, and it is widely accepted to cause negligible changes to the images. Accordingly, to exploit this fact, we can impose a restriction to the flow field to keep its values in the range \((-1, 1)\). We initialize a pre-flow field \(f_{pre}\) and calculate the applied flow field as \(f = \tanh(f_{pre})\). This differentiable reparameterization~\cite{mordvintsev2018differentiable} of flow field constraints the flow field magnitude to be smaller than 1 without inhibiting end-to-end differentiability so that chrominance value of each pixel of the adversarial image \(x_{adv}\) is only affected by the value of the pixel of the same location in \(x\) and its neighboring pixels. %With this modification, chroma subsampling becomes a very effective defense method to the subpixel restricted variant our attack without making any visually perceptible changes, as discussed in Section~\refeq{section:discussion}.
+\subsection{Colorspace conversion}
+To make the adversarially perturbed images indistinguishable from their benign counterparts, the flow field is applied only to the channels that human vision is not very sensitive to~\cite{vorobyev2004ecology}. Since widely used RGB colorspace is not designed to be a perceptual colorspace, even small spatial perturbations to any RGB channel creates visually distinguishable changes. Hence, we first convert the benign image to a perceptual colorspace such as \(YC_{b}C_{r}\) where human vision is not sensitive to the spatial perturbations in, which is \(C_{b}\) and \(C_{r}\) in \(YC_{b}C_{r}\), and \(a^*\) and \(b^*\) in CIELAB colorspace. Then, we apply the flow field only to the channels Cb and Cr in \(YC_{b}C_{r}\), and A and B in CIELAB colorspace.
+
+%\subsubsection{YCbCr}
+\(YC_{b}C_{r}\) is a colorspace that is used in digital photography and visual media compression. In this space, luminance (brightness) and chrominance (color) is separated according to human visual perception. Y dimension of the space is the luminance information, or simply a grayscale representation of the image. \(C_b\) and \(C_r\) dimensions are the blue-difference and red-difference chroma components, respectively. The relation between RGB space and \(YC_{b}C_{r}\) space is modeled as Equation~\ref*{eq:eq1}, which is a set of linear equations defined in ITU-T H.273~\cite{hamilton2004jpeg};
+\begin{align}
+    \label{eq:eq1}
+    \begin{split}
+        Y   & = 0.299 R+0.587 G+0.114 B                   \\
+        C_b & = 128-(0.168736 R)-(0.331264 G)+(0.5 B)     \\
+        C_r & = 128+(0.5 R)-(0.418688 G)-(0.081312 B)     \\
+        % R & = Y+1.402(C_{r}-128)                        \\
+        % G & = Y-0.344136(C_{b}-128)-0.714136(C_{r}-128) \\
+        % B & = Y+1.772C_b-128
+    \end{split}
+\end{align}
+
+% In many multimedia compression standards such as JPEG and MPEG, chroma components are usually subsampled to compress information without making visually perceptible changes.
+
+%\subsubsection{CIELAB}
+CIELAB colorspace~\cite{schanda2007colorimetry} defined by the International Commission on Illumination (CIE) has the following three components: L, \(a^*\) and \(b^*\). L is perceptual lightness where \(L = 0\) and \(L* = 100\) define a black and a white pixel, respectively, regardless of the \(a^*\) and \(b^*\) values. \(a^*\) and \(b^*\) dimensions are the chroma components. They are designed to be perceptually uniform where a numerical change in pixel value corresponds to a similar change in human perception ~\cite{mahy1992luminancevschroma}. Both chroma components are in the range \([-127, 127]\). Unlike \(YC_{b}C_{r}\), CIELAB space does not have a linear relationship with RGB space. In fact, conversion to an intermediary space CIEXYZ is needed to transform from RGB to CIELAB and there are different implementations of CIELAB conversion. We used the RGB to LAB implementation from Kornia library~\cite{riba2020kornia}, which assumes D65 illuminant and Observer 2.
+
+
+\begin{figure}[h]
+    \includegraphics[width=0.24\linewidth]{examples/benign_0.png}
+    \includegraphics[width=0.24\linewidth]{examples/example_lab_0.png}
+    \includegraphics[width=0.24\linewidth]{examples/example_ycbcr_0.png}
+    \includegraphics[width=0.24\linewidth]{examples/example_rgb_0.png}
+
+    \includegraphics[width=0.24\linewidth]{examples/benign_4.png}
+    \includegraphics[width=0.24\linewidth]{examples/example_lab_4.png}
+    \includegraphics[width=0.24\linewidth]{examples/example_ycbcr_4.png}
+    \includegraphics[width=0.24\linewidth]{examples/example_rgb_4.png}
+
+    \includegraphics[width=0.24\linewidth]{examples/benign_5.png}
+    \includegraphics[width=0.24\linewidth]{examples/example_lab_5.png}
+    \includegraphics[width=0.24\linewidth]{examples/example_ycbcr_5.png}
+    \includegraphics[width=0.24\linewidth]{examples/example_rgb_5.png}
+
+    \includegraphics[width=0.24\linewidth]{examples/benign_20.png}
+    \includegraphics[width=0.24\linewidth]{examples/example_lab_20.png}
+    \includegraphics[width=0.24\linewidth]{examples/example_ycbcr_20.png}
+    \includegraphics[width=0.24\linewidth]{examples/example_rgb_20.png}
+
+    \includegraphics[width=0.24\linewidth]{examples/benign_7.png}
+    \includegraphics[width=0.24\linewidth]{examples/example_lab_7.png}
+    \includegraphics[width=0.24\linewidth]{examples/example_ycbcr_7.png}
+    \includegraphics[width=0.24\linewidth]{examples/example_rgb_7.png}
+
+    \includegraphics[width=0.24\linewidth]{examples/benign_30.png}
+    \includegraphics[width=0.24\linewidth]{examples/example_lab_30.png}
+    \includegraphics[width=0.24\linewidth]{examples/example_ycbcr_30.png}
+    \includegraphics[width=0.24\linewidth]{examples/example_rgb_30.png}
+
+
+    \caption{Examples from the dataset and adversarial examples generated with their target class probabilities. From left to right; Benign image, adversarial image generated by attacking in  and RGB. }\label{fig:visualprob}
+\end{figure}
+\section{Research Method and Experiment Design}

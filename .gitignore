@@ -1,0 +1,16 @@
+*.aux
+*.bbl
+*.blg
+*.log
+# *.pdf
+*.fls
+*.zip
+*.fdb_latexmk
+*.out
+*.spl
+*.synctex.gz
+**/.DS_Store
+template/
+.vscode
+
+# !elsevier-logo.pdf

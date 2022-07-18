@@ -1,0 +1,9 @@
+% CHAPTER 7
+\chapter{Conclusion and Future Work}
+\section{Conclusions}
+Adopting the techniques used in multimedia compression and using the idea that pixel shifts in a constrained neighborhood are hard to notice, we designed a method that applies local spatial transformations to chrominance channels of perceptual colorspaces. The proposed method results in adversarial images having imperceptible distortions without requiring any regularization. In addition to obtaining competitive fooling rates, restricting magnitude of the spatial transformations still yields successful attacks, when there is sufficient amounts of local chrominance variation in the input image.
+
+%\section{Future Work}
+In addition to the perceptual colorspaces investigated in this work, other perceptual colorspaces such as CIELUV, HSLuv and CIEXYZ~\cite{schanda2007colorimetry} can also be utilized to create imperceptible adversarial examples. Out of gamut values at borders with red pixels may result in visible artifacts during the adversarial image generation and preventing such out-of-gamut values would result in better quality adversarial images.  %Moreover, many other perceptual distance metrics could be measured to assess visual quality more extensively ~\cite{lin2011perceptual}. 
+While our method does not require optimizing using a visual quality metric, it can be utilized along with our method to obtain a better visual quality.
+\label{chp:b7}
