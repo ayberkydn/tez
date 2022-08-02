@@ -12,5 +12,7 @@
 **/.DS_Store
 template/
 .vscode
+thesis.*
+!thesis.tex
 
 # !elsevier-logo.pdf

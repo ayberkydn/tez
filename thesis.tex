@@ -1,4 +1,6 @@
-\documentclass[chaparabic,is,phd,10pt,single]{metu} 
+% \documentclass[chaparabic,mmi,msc,10pt,single]{metu} 
+\documentclass[chaparabic,mas,ms,12pt,oneandhalf,threejury]{metu}
+
 % Change this
 % is: Information Systems
 % phd: PhD
@@ -72,12 +74,12 @@
 \newcommand{\EA}[1]{\textcolor{red}{[EA: #1]}}
 
 % Name and Surname
-\author{Author Name} % Change this
+\author{Ayberk Aydin} % Change this
 % Thesis Title English and Turkish
 \title{ADVERSARIAL IMAGE GENERATION BY SPATIAL TRANSFORMATIONS IN COLOR SPACE} % Change this
-\turkishtitle{UZAYSAL DÖNÜŞÜMLER İLE ÇEKİŞMELİ ÖRNEK ÜRETİLMESİ ?} % Change this
+\turkishtitle{UZAYSAL DÖNÜŞÜMLER İLE ÇEKİŞMELİ ÖRNEK ÜRETİLMESİ} % Change this
 
-\date{August 2019} % Change this
+\date{August 2022} % Change this
 
  
 % prof : Prof. Dr.
@@ -86,20 +88,20 @@
 % dr : Dr.
 %
 % Director of Institute
-\director[prof]{Director of Institute} % Change this
+\director[prof]{Sevgi Özkan Yıldırım} % Change this
 % Head of Department
-\headofdept[prof]{Head of Department} % Change this
+\headofdept[assocprof]{Elif Sürer} % Change this
 %
 % Supervisor : English and Turkish
-\supervisor[assocprof]{Supervisor} % Change this
+\supervisor[prof]{Alptekin Temizel} % Change this
 % \turkishsupervisor{  } %if you will hard-code the academic title
 %
 % Affiliation of Supervisor in English and possibly in Turkish
-\departmentofsupervisor{Department, School} % Change this
+\departmentofsupervisor{Graduate School of Informatics, Middle East Technical University} % Change this
 
-\cosupervisor[assocprof]{Co-supervisor if Exists} % Change this
-\departmentofcosupervisor{Department, School} % Change this
-%
+% \cosupervisor[assocprof]{Co-supervisor if Exists} % Change this
+% \departmentofcosupervisor{Department, School} % Change this
+
 % Committee Members
 % In general members are sorted according to their academic titles
 %
@@ -115,11 +117,14 @@
 % First committee member should be the chair of examining committee
 % Typically the chair is one of the highest ranked committee members
 % Ask your supervisor if you are not sure
-\committeememberi[prof]{Committee Member 1} % Change this
-\affiliationi{Department, School} % Change this
+\committeememberi[prof]{Alptekin Temizel} % Change this
+\affiliationi{Graduate School of Informatics, Middle East Technical University} % Change this
 % Second committee member is always your supervisor
-\committeememberii[assocprof]{Committee Member 2} % Change this
-\affiliationii{Department, School} % Change this
+\committeememberii[assocprof]{Elif Sürer} % Change this
+\affiliationii{Graduate School of Informatics, Middle East Technical University} % Change this
+
+\committeememberiii[assocprof]{Gökhan Koray Gültekin} % Change this
+\affiliationiii{Electrical\&Electronics Engineering, Ankara Yildirim Beyazit University}  % Change this
 % If you are an M.Sc. student and your Co-Supervisor is in your 
 % examination committee, then third committee member is always your co-supervisor
 %
@@ -131,14 +136,12 @@
 % \def\@assistproftitlename{Assist. Prof. Dr.}\def\@tassistproftitlename{Yrd. Doç. Dr.}
 % \def\@drtitlename{Dr.}\def\@tdrtitlename{Dr.}
 
-\committeememberiii[assocprof]{Committee Member 3} % Change this
-\affiliationiii{Department, School}  % Change this
 % Fourth committee member
-\committeememberiv[assistprof]{Committee Member 4} % Change this
-\affiliationiv{Department, School} % Change this
-% Fifth committee member
-\committeememberv[assistprof]{Committee Member 5} % Change this
-\affiliationv{Department, School} % Change this
+% \committeememberiv[assistprof]{Committee Member 4} % Change this
+% \affiliationiv{Department, School} % Change this
+% % Fifth committee member
+% \committeememberv[assistprof]{Committee Member 5} % Change this
+% \affiliationv{Department, School} % Change this
 %
 % Keywords : English & Turkish, Comma seperated
 \keywords{A keyword, another keyword, some other keywords} % Change this
@@ -163,10 +166,7 @@
 %
 %
 % Acknowledgements   
-\acknowledgments{
-  Acknowledgments here Acknowledgments here Acknowledgments here Acknowledgments here Acknowledgments here Acknowledgments here Acknowledgments here Acknowledgments here Acknowledgments here Acknowledgments here Acknowledgments here Acknowledgments here Acknowledgments here Acknowledgments here Acknowledgments here
-} % Change this
-
+\acknowledgments{ This work has been funded by The Scientific and Technological Research Council of Turkey, ARDEB 1001 Research Projects Programme project no: 120E093 } % Change this
 %
 % End of Personal and Introductory Information
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%5
@@ -190,11 +190,12 @@
 
 % You can add as many chapters
 % Change this
-\input{chapters/introduction.tex}
-\input{chapters/related_work.tex}
-\input{chapters/methodology.tex}
-\input{chapters/experiments.tex}
-\input{chapters/conclusions.tex}
+\input{chapters/1_introduction}
+\input{chapters/2_literature}
+\input{chapters/3_methodology}
+\input{chapters/4_results}
+\input{chapters/5_discussion}
+\input{chapters/6_conclusion}
 
 
 \input{references.tex}
