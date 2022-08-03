@@ -1,8 +1,11 @@
 % CHAPTER 1
 \chapter{Introduction}
-\label{chp:b1}
+\label{chp:1_introduction}
 
+\section{Motivation and Problem Definiton}
 In recent years, deep neural networks have shown impressive performance in many vision related tasks such as image classification~\cite{he2015deep}, object detection~\cite{redmon2018yolov3} and image segmentation~\cite{long2015fully}. However, they are found to be vulnerable to intentionally crafted small perturbations called adversarial perturbations~\cite{szegedy2013intriguing}. These small perturbations added to the input image successfully change the output of a trained classifier by altering the logits large enough to change its decision to a preferred class~\cite{goodfellow2014explaining}. While these perturbations are optimized in \(\mathcal{L}_p\) spaces~\cite{carlini2017towards}, they are visible to human observers, since small \(\mathcal{L}_p\) does not always correspond to small visible perturbations~\cite{jordan2019quantifying,engstrom2018rotation}.
+
+\section{Proposed Methods}
 There is an ongoing research on finding difference metrics over 2D images that aligns with human visual perception, which is challenging due to the nature and lack of knowledge about the human vision. Multimedia compression standards have been developed to compress visual multimedia such as images and videos to reduce the amount of data with minimum amount of distortion to the perceived output. One of the most fundamental ideas of visual multimedia compression is that human vision is much less sensitive to the information loss in color than the luminance.
 %evolution%
 This observation is utilized in image compression as a technique known as ``chroma subsampling''. There are variants of chroma subsampling that only subsamples chrominance along horizontal axis (4:2:2) or both horizontal and vertical axes (4:2:0). Without further compression, (4:2:0) chroma subsampling reduces the size of an image effectively to half of its original size. Replacing the chroma components of the pixels in by neighboring chroma components does not yield visible artifacts. We employ this observation to derive a new type of adversarial attack based on spatial transformations in chroma channels of perceptual colorspaces. We apply spatial transformation only to the chroma components of input image while keeping the luminance component intact. Figure~\ref{fig:flowtochannels} shows the effect of a randomly initialized flow field applied to the luminance, chrominance and both set of channels. It is clear that spatial transformation in luminance channels causes visible distortions while chrominance only spatial transformations cause very subtle changes for human vision. This effect is much more highlighted when only the differences are observed after applying a flow field. Figure \ref{fig:outofgamut} shows the absolute pixel difference from the initial image when the same flow field is applied to RGB, \(C_{b}C_{r}\) and a*b* channels, respectively.
@@ -68,9 +71,15 @@ This observation is utilized in image compression as a technique known as ``chro
     \caption{Visual illustration of the proposed adversarial example generation method. Luminance and chrominance channels are Y and \(C_{b}C_{r}\) when \(YC_{b}C_{r}\) colorspace and L and \(a^*b^*\) when CIELAB colorspace is used. Visual representation of flow field, subpixel restriction by \(\tanh\) and conversion of concatenated image back to RGB colorspace is omitted for brevity.}\label{fig:algorithm}
 \end{figure*}
 
-\section{Research Questions}
-
 \section{Contributions of the Study}
 
+The main findings of this thesis is published in a paper~\cite{aydin2019imperceptible} and the subject is further elaborated in this thesis. The contributions of this work can be summarized as following;
+\begin{itemize}
+    \item Utilization of the findings of human vision and ideas from multimedia compression to make imperceptible changes on images without any \(L_p\) norm restriction or regularization.
+    \item A novel method to generate adversarial examples with little to no perceptual distortion by applying spatial transformations in chroma channels of perceptual colorspaces.
+    \item Colorfulness analysis of NIPS2017 Adversarial Challenge dataset.
+\end{itemize}
+
 \section{Organization of the Thesis}
+Chapter \ref{chp:b1}
 

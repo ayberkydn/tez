@@ -1,5 +1,5 @@
 \chapter{related work}
-\label{chp:b2}
+\label{chp:2_literature}
 
 In this chapter, related studies are given in detail.
 Spatial transformations as a method for generating adversarial examples was first proposed in ~\cite{xiao2018spatially}, where it is shown that small displacements applied to input pixels can successfully fool a target network. However, using this method, even small displacements could cause visible distortions when the adjacent pixels are drifted towards different directions. As a remedy to this problem, use of  Total Variation~(TV) regularization~\cite{estrela2016total} was proposed. Application of TV regularization to the flow field pushes the neighboring displacement vectors to the same direction and, hence, produces smoother output. Similarly, Jordan et al. combined spatial transformations with \(l_\infty\) bounded attacks to forge stronger attacks with better perceptual quality. Croce et al. argued adding noise to smooth areas of an image causes visible artifacts and proposed "hiding" the perturbations at the locations with high spatial variations such as edges and corners~\cite{croce2019sparse}. As seen from Figure \ref{fig:diff}, perturbations made with our method naturally occurs in the places with high variations since it is based on local spatial transforms.

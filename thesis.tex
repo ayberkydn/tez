@@ -76,8 +76,8 @@
 % Name and Surname
 \author{Ayberk Aydin} % Change this
 % Thesis Title English and Turkish
-\title{ADVERSARIAL IMAGE GENERATION BY SPATIAL TRANSFORMATIONS IN COLOR SPACE} % Change this
-\turkishtitle{UZAYSAL DÖNÜŞÜMLER İLE ÇEKİŞMELİ ÖRNEK ÜRETİLMESİ} % Change this
+\title{IMPROVING PERCEPTUAL QUALITY OF SPATIALLY TRANSFORMED ADVERSARIAL EXAMPLES} % Change this
+\turkishtitle{KONUMSAL DÖNÜŞÜMLÜ ÇEKİŞMELİ ÖRNEKLERİN ALGISAL KALİTESİNİN İYİLEŞTİRİLMESİ} % Change this
 
 \date{August 2022} % Change this
 
@@ -144,19 +144,19 @@
 % \affiliationv{Department, School} % Change this
 %
 % Keywords : English & Turkish, Comma seperated
-\keywords{A keyword, another keyword, some other keywords} % Change this
-\anahtarklm{Bir anahtar kelime, başka bir anahtar kelime, başka anahtar kelimeler} % Change this
+\keywords{deep learning, adversarial examples, perceptual quality} % Change this
+\anahtarklm{derin öğrenme, çekişmeli örnekler, algısal kalite} % Change this
 %
 % Abstract in English
 %
 \abstract{
- Deep neural networks are known to be vulnerable to adversarial perturbations. The amount of these perturbations are generally quantified using \(\mathcal{L}_p\) metrics. However, even when the measured perturbations are small, they tend to be noticeable by human observers since \(\mathcal{L}_p\) distance metrics are not representative of human perception. On the other hand, humans are less sensitive to changes in colorspace. In addition, pixel shifts in a constrained neighborhood are hard to notice. Motivated by these observations, we propose a method that creates adversarial examples by applying spatial transformations, which creates adversarial examples by changing the pixel locations independently to chrominance channels of perceptual colorspaces such as \(YC_{b}C_{r}\) and \(CIELAB\), instead of making an additive perturbation or manipulating pixel values directly. In a targeted white-box attack setting, the proposed method is able to obtain competitive fooling rates with very high confidence. The experimental evaluations show that the proposed method has favorable results in terms of approximate perceptual distance between benign and adversarially generated images.
+ Deep neural networks are known to be vulnerable to additive adversarial perturbations. The amount of these additive perturbations are generally quantified using \(\mathcal{L}_p\) metrics over the difference between adversarial and benign examples. However, even when the measured perturbations are small, they tend to be noticeable by human observers since \(\mathcal{L}_p\) distance metrics are not representative of human perception. Spatially transformed examples work by distorting pixel locations instead of applying an additive perturbation or altering the pixel values directly, which produces adversarial examples with improved visual quality. However, the perturbation made by spatial transformations produce visible non-smooth distortions on luminance channels and needs a smoothness regularization over the applied flow field in order to improve the visual quality. On the other hand, humans are less sensitive to changes in chrominance component of visual media and such as resolution loss or pixel shifts in a constrained neighborhood. Motivated by these observations, we propose a novel variation of spatially transformed adversarial examples that creates adversarial examples by applying spatial transformations to chrominance channels of perceptual colorspaces such as \(YC_{b}C_{r}\) and \(CIELAB\) to generate adversarial examples with high perceptual quality. Moreover, we find that the visual quality of these examples could be further improved by limiting the magnitude of applied spatial transformations. In a targeted white-box attack setting, the proposed method is able to obtain competitive fooling rates and experimental evaluations show that the proposed method has favorable results in terms of approximate perceptual distance between benign and adversarial images. 
 } % Change this
 %
 % Turkish Abstract
 %
 \oz{
- TURKCE Deep neural networks are known to be vulnerable to adversarial perturbations. The amount of these perturbations are generally quantified using \(\mathcal{L}_p\) metrics. However, even when the measured perturbations are small, they tend to be noticeable by human observers since \(\mathcal{L}_p\) distance metrics are not representative of human perception. On the other hand, humans are less sensitive to changes in colorspace. In addition, pixel shifts in a constrained neighborhood are hard to notice. Motivated by these observations, we propose a method that creates adversarial examples by applying spatial transformations, which creates adversarial examples by changing the pixel locations independently to chrominance channels of perceptual colorspaces such as \(YC_{b}C_{r}\) and \(CIELAB\), instead of making an additive perturbation or manipulating pixel values directly. In a targeted white-box attack setting, the proposed method is able to obtain competitive fooling rates with very high confidence. The experimental evaluations show that the proposed method has favorable results in terms of approximate perceptual distance between benign and adversarially generated images.
+  Derin yapay sinir ağlarının eklemeli çekişmeli bozulmalara karşı savunmasız olduğu bilinmektedir. Bu bozulmaların miktarı \(\mathcal{L}_p\) metrikleri ile ölçülmektedir. Ancak, ölçülen bozulmaların miktarı az olsa da bu bozulmalar insan gözlemciler tarafından görülebilmektedir çünkü \(\mathcal{L}_p\) uzaklık metrikleri insan görüsünü yansıtmamaktadır. Uzaysal dönüşümlü örnekler piksel değerlerini doğrudan değiştirmek yerine piksel konumlarında bozulmalar yaparak görsel kalitesi yüksek çekişmeli örnekler üretir. Ancak, uzaysal dönüşümler tarafından yapılmış bozulmalar da parlaklık kanalında insanlar tarafından görülebilen pürüzsüz olmayan bozulmalara sebep olduğundan, bu yöntem görsel kaliteyi artırmak için bir pürüzsüzlük düzenlemesine ihtiyaç duymaktadır. Diğer yandan, insan görüsü görsel medyalardaki renk bileşeninin değişimine parlaklık değişiminden çok daha az duyarlıdır. Ayrıca kısıtlandırılmış komşuluklarda çözünürlük kaybı ve piksel kaymaları güçlükle fark edilebilmektedir. Bu çokluortam sıkıştırma gözlemlerinden yola çıkarak uzaysal dönüşümlü çekişmeli örneklerin \(YC_{b}C_{r}\) ve \(CIELAB\) gibi algısal renk uzaylarının renkseme bileşenlerine uzaysal dönüşüm yapan ve görsel kalitesi yüksek çekişmeli örnekler çıkaran yeni bir varyasyonu önerilmiştir. Buna ek olarak, uzaysal dönüşümün büyüklüğünü sınırlayarak görsel kalitenin daha da artırıldığı gözlemlenmiştir. Hedefli beyaz-kutu kurulumunda, önerilen yöntem yüksek bir güven puanı ile rekabetçi bir yanıltma oranı yakalamaktadır. Deneysel değerlendirilmeler, önerilen yöntemin, zararsız ve çekişmeli örnekler arasındaki algısal uzaklık cinsinden tercih edilir sonuçlar ortaya çıkardığını göstermektedir. 
 } % Change this
 %
 % Dedication 
