@@ -4,7 +4,15 @@
 In this chapter, related studies are given in detail. Firstly, the concept of adversarial examples and the types of adversarial examples are explained briefly. Then, spatially transformed adversarial examples are explained in detail.
 \section{Adversarial Examples}
 
-The concept of adversarial examples were introduced by Szegedy et al.~\cite{szegedy2013intriguing}. They found that adding small calculated perturbances to the input image is able to change the decision of the target classifier (deep neural network) without affecting the decision human observers. Even though the perturbation is small, it can be easily noticed by human observers by "visual noise" instead of semantically meaningful patterns. Since this intriguing property of neural networks has security implications in the production setting, it is often called as adversarial attacks. For example, websites are using Completely Automated Public Turing Tests to Tell Computers and Humans Apart (CAPTCHA) to prevent web scrapers and spiders from automatically reaching their content. A widely used CAPTCHA is asking to select the images that is from a specific class such as "bicycle" or "crossroad" among the provided images. A human can effortlessly detect the suitable images while web scrapers need to use DNNs to classify each image and select the correct ones. Recent CAPTCHAs has extended this setup by adding adversarial perturbations to the provided images to prevent DNNs from automatically selecting the correct images. In Figure \ref{fig:googlecaptcha}, a recent CAPTHCA from Google is shown where it is asked to select the images that contains "cars". Normally, a trained DNN could be used to classify images and to select the images whose output is the class "car" to pass the test. However, there is a noticeable adversarial noise added to the images to fool the DNN and to prevent the scraper from passing the test.
+The concept of adversarial examples were introduced by Szegedy et al.~\cite{szegedy2013intriguing}. They found that adding small calculated perturbances to the input image is able to change the decision of the target classifier (deep neural network) without affecting the decision human observers. Even though the perturbation is small, it can be easily noticed by human observers by "visual noise" instead of semantically meaningful patterns. A widely used example for adversarial examples is shown in Figure~\ref{fig:advexample}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\linewidth]{fgsm_panda_image.png}
+    \caption{Visual illustration of adversarial examples. Taken from Goodfellow et al.~\cite{goodfellow2014explaining}}\label{fig:advexample}
+\end{figure}
+
+Since this intriguing property of neural networks has security implications in the production setting, it is often called as adversarial attacks. For example, websites are using Completely Automated Public Turing Tests to Tell Computers and Humans Apart (CAPTCHA) to prevent web scrapers and spiders from automatically reaching their content. A widely used CAPTCHA is asking to select the images that is from a specific class such as "bicycle" or "crossroad" among the provided images. A human can effortlessly detect the suitable images while web scrapers need to use DNNs to classify each image and select the correct ones. Recent CAPTCHAs has extended this setup by adding adversarial perturbations to the provided images to prevent DNNs from automatically selecting the correct images. In Figure \ref{fig:googlecaptcha}, a recent CAPTHCA from Google is shown where it is asked to select the images that contains "cars". Normally, a trained DNN could be used to classify images and to select the images whose output is the class "car" to pass the test. However, there is a noticeable adversarial noise added to the images to fool the DNN and to prevent the scraper from passing the test.
 \begin{figure}[t]
     \centering
     \includegraphics[width=0.4\linewidth]{captchas/1.png}
@@ -24,11 +32,18 @@ The equation simply indicates that the adversary is aiming to maximize a loss fu
 Since naively trained models are vulnerable to adversarial perturbations, the concept of adversarial training is introduced~\cite{madry2017towards}. In adversarial training, the datapoints are sampled from both original training set and on-the-fly generated adversarial attacks to the model that is being trained. Although the training time is significantly increased since adversarial example generation needs at least one forward and backward pass on the model, this method has been shown to increase the adversarial robustness of the trained model. There are several methods for adversarial example generation. The most widely used methods are explained in Section \ref{section:methods}.
 
 \section{Adversarial Example Generation Methods}\label{section:methods}
-
+There are many studies proposed methods for generating adversarial examples. The most widely used and experimented methods are explained. For the formal equations for these methods, the following variables are defined;
+\begin{itemize}
+    \item \(x\): Benign image
+    \item \(x_{adv}\): Adversarial image
+    \item \(y\): Target class
+    \item \(J(x, y)\): Cost function with respect to benign image and target class
+    \item \(Z(x)_i\): Score of i-th class on input image \(x\)
+\end{itemize}
 
 \subsection{Fast Gradient Sign Method}
 
-Goodfellow et al.\cite{goodfellow2014explaining} found that the fastest method of generating adversarial examples with \(l_\infty\) norm constraint by using the sign of gradient of the loss with respect to the input instead of the values of the gradient, named Fast Gradient Sign Method~(FGSM). The formal equation of the adversarial image generation process is shown in Equation \ref{eq:fgsm}
+Goodfellow et al.\cite{goodfellow2014explaining} found that local linearity of DNNs leads \(l_\infty\) vulnerability. It also proposes a method for generating adversarial examples with \(l_\infty\) norm constraint by using the sign of gradient of the loss with respect to the input instead of the values of the gradient, named Fast Gradient Sign Method~(FGSM). The formal equation of the adversarial image generation process is shown in Equation \ref{eq:fgsm}
 
 \begin{equation}
     \label{eq:fgsm}
@@ -37,7 +52,7 @@ Goodfellow et al.\cite{goodfellow2014explaining} found that the fastest method o
 
 According to Goodfellow et al., this method works even when \(\epsilon\) is too small since the deep neural networks are actually linear in small local epsilon neighborhood of the input point. This method is generally used as a fast and easy to compute baseline in most works.
 
-After FGSM, many sophisticated methods have been proposed for adversarial example generation with \(\mathcal{L}_p\) norm constraints. The most prominent and widely used algorithms are Projected Gradient Descent~(PDG) and Carlini \& Wagner method (C\&W) along with FGSM.
+After FGSM, many improved methods have been proposed for adversarial example generation with \(\mathcal{L}_p\) norm constraints. The most prominent and widely used algorithms are Projected Gradient Descent~(PDG) and Carlini \& Wagner method (C\&W) along with FGSM.
 
 \subsection{Basic Iterative Method \& Projected Gradient Descent}
 Basic Iterative Method~(BIM)~\cite{kurakin2018adversarialphys} can be simply thought as the iterative version of FGSM except that at each iteration, the adversarial example is clipped to the \(\epsilon\) neighborhood of the benign datapoint. This has found to be an useful heuristic since it allows generating more successful examples in terms of fooling rate without requiring significant computational budget.
@@ -56,7 +71,7 @@ Projected Gradient Descent~(PGD) \cite{madry2017towards} is very similar to BIM 
 
 
 \subsection{Carlini \& Wagner Attack}
-Carlini \& Wagner~\cite{carlini2017towards} attack is an iterative method for generating adversarial examples. It uses reformulation of the constrainted optimization objective so that the constraints are naturally satisfied without requiring an explicit step for clipping or projecting the adversarial example in the \(\mathcal{L}_p\) ball. The optimization process is formulated in Equation~\ref{eq:cw} and Equation~\ref{eq:cw2}
+Carlini \& Wagner~\cite{carlini2017towards} attack is an iterative method for generating adversarial examples. It uses reformulation of the constrainted optimization objective by defining a new variable \(w\) so that the constraints are naturally satisfied without requiring an explicit step for clipping or projecting the adversarial example in the \(\mathcal{L}_p\) ball. The optimization process is formulated in Equation~\ref{eq:cw} and Equation~\ref{eq:cw2}
 
 \begin{equation}
     \label{eq:cw}
@@ -75,9 +90,9 @@ where \(\kappa\) denotes the target confidence for the adversarial example, whic
 
 
 \section{Colorspaces}
-In most image processing tasks, standard RGB colorspace is used, where R, G, B denotes the Red, Blue, Green components of the image. However, it is incompatible with Human Visual System (HVS) so the need for HVS compatible (perceptual) colorspaces arises for the tasks concerning HVS such as lossy visual media compression where the media is compressed to reduce the size without affecting the perceived output. In this thesis, the perceptual colorspaces YUV, \(YC_{b}C_{r}\) and CIELAB are used.
+In most image processing tasks, standard RGB colorspace is used, where R, G, B denotes the Red, Blue, Green components of the image. However, it is incompatible with Human Visual System (HVS) so the need for HVS compatible (perceptual) colorspaces arises for the tasks concerning HVS such as lossy visual media compression where the media is compressed to reduce the size without affecting the perceived output. In this thesis, standard RGB colorspace and the perceptual colorspaces YUV, \(YC_{b}C_{r}\) and CIELAB are used for experiments.
 
-\subsection*{YUV and YCbCr}
+\subsection{YUV and YCbCr}
 The \(YC_{b}C_{r}\) model defines a luminance component (Y) and two chrominance components \(C_{b}, C_{r}\) to specify color. \(YC_{b}C_{r}\) is a colorspace that is used in digital photography and visual media compression. In this space, luminance (brightness) and chrominance (color) is separated according to human visual perception. Y dimension of the space is the luminance information, or simply a grayscale representation of the image. \(C_b\) and \(C_r\) dimensions are the blue-difference and red-difference chroma components, respectively. The relation between RGB space and \(YC_{b}C_{r}\) space is modeled as Equation~\ref*{eq:rgbycbcr}, which is a set of linear equations defined in ITU-T H.273~\cite{hamilton2004jpeg};
 
 \begin{align}
@@ -94,7 +109,8 @@ The \(YC_{b}C_{r}\) model defines a luminance component (Y) and two chrominance 
 
 YUV is often considered as the analog counterpart of \(YC_{b}C_{r}\). There is no significant difference between YUV and \(YC_{b}C_{r}\) except for the scaling of chrominance components to the range 0-255 for \(YC_{b}C_{r}\) so that they can be represented as unsigned integers while chrominance values can be negative in YUV colorspace. For that reason, these two terms are often used interchangeably.
 
-\subsection{CIELAB}
+\subsection{CIEXYZ and CIELAB}
+CIE 1931 XYZ (CIEXYZ) colorspace was proposed by International Commission of Illumination (CIE) in 1931 after a series of human experiments on color perception. There are three components, namely X, Y and Z. While Y denotes the luma component, there is no independent representations of XZ components and these components together represent possible chrominance values for given Y value.
 CIELAB colorspace~\cite{schanda2007colorimetry} defined by the International Commission on Illumination (CIE) has the following three components: L, \(a^*\) and \(b^*\). L is perceptual lightness where \(L = 0\) and \(L* = 100\) define a black and a white pixel, respectively, regardless of the \(a^*\) and \(b^*\) values. \(a^*\) and \(b^*\) dimensions are the chroma components. They are designed to be perceptually uniform where a numerical change in pixel value corresponds to a similar change in human perception ~\cite{mahy1992luminancevschroma}. Both chroma components are in the range \([-127, 127]\). Unlike \(YC_{b}C_{r}\), CIELAB space does not have a linear relationship with RGB space. In fact, conversion to an intermediary space CIEXYZ is needed to transform from RGB to CIELAB and there are different implementations of CIELAB conversion. We used the RGB to CIELAB implementation from Kornia library~\cite{riba2020kornia}, which assumes D65 illuminant and Observer 2.
 
 \section{Perceptual Distance Metrics}
@@ -133,7 +149,7 @@ Using these three measures, SSIM is calculated according to Equation~\ref{eq:ssi
 Although there are many variations of SSIM, original SSIM and Multi-Scale SSIM (MS-SSIM) are used in this thesis. The difference between SSIM and MS-SSIM is MS-SSIM is computed over multiple scales of the compared images through multiple scales of subsampling.
 
 \subsection{Learned Perceptual Image Patch Similarity (LPIPS)}
-LPIPS is proposed by
+Zhang et al. found that DNN representations of images are very effective for approximating perceptual similarity of two images supported by human experiments. They proposed Learned Perceptual Image Patch Similarity to assess perceptual distance between images. It works by simply computing the Euclidean distance between deep representations of trained deep convolutional networks. They experimented with different DNN architectures and have not observed significant difference. In this thesis, ImageNet trained VGG-16 is used for LPIPS computation.
 
 \section{Perceptual Quality Preserving Adversarial Attacks}
 
@@ -146,7 +162,7 @@ Unlike these methods, the attack proposed in this paper does not rely on auxilia
 
 \subsection{Spatially Transformed Adversarial Examples}
 
-Spatial transformations as a method for generating adversarial examples was first proposed in ~\cite{xiao2018spatially}, where it is shown that small displacements applied to input pixels can successfully fool a target network. However, using this method, even small displacements could cause visible distortions when the adjacent pixels are drifted towards different directions. As a remedy to this problem, use of  Total Variation~(TV) regularization~\cite{estrela2016total} was proposed. Application of TV regularization to the flow field pushes the neighboring displacement vectors to the same direction and, hence, produces smoother output. Similarly, Jordan et al. combined spatial transformations with \(l_\infty\) bounded attacks to forge stronger attacks with better perceptual quality.
+Spatial transformations as a method for generating adversarial examples was first proposed in ~\cite{xiao2018spatially}, where it is shown that small displacements applied to input pixels can successfully fool a target network. However, using this method, even small displacements could cause visible distortions when the adjacent pixels are drifted towards different directions. As a remedy to this problem, use of  Total Variation~(TV) regularization~\cite{estrela2016total} was proposed. Application of TV regularization to the flow field pushes the neighboring displacement vectors to the same direction and, hence, produces smoother output. Similarly, Jordan et al.~\cite{jordan2019quantifying} combined spatial transformations with \(l_\infty\) bounded attacks to forge stronger attacks with better perceptual quality.
 
 Spatial transformations aim to alter the geometry of the input image instead of changing the pixel values. To accomplish that, stAdv applies a flow field \(f \in \mathbb{R}^{2\times H \times W}\) whose elements are flow vectors (or displacement vectors) \(f_i\) for each pixel in the adversarial image. Since the elements of displacement vectors are not integers, a need for interpolation to sample fractional positions arises. In this work, bilinear interpolation is used since it is a simple and computationally efficient. The application of flow field to the benign image is formulated in Equation \ref{eq:stadv} where \(\mathbf{x}_{\mathrm{adv}}^{(i)}\) denotes the value of i'th pixel in adversarial image and \(u_{adv}\),\(v_{adv}\) denotes the position of that pixel in the adversarial image.
 \begin{equation}
@@ -154,7 +170,14 @@ Spatial transformations aim to alter the geometry of the input image instead of 
     \mathbf{x}_{\mathrm{adv}}^{(i)}=\sum_{g \in \mathcal{N}\left(u^{(i)}, v^{(i)}\right\rangle} \mathbf{x}^{(q)}\left(1-\left|u^{(i)}-u^{(q)}\right|\right)\left(1-\left|v^{(i)}-v^{(q)}\right|\right)
 \end{equation}
 
-Since bilinear interpolation is differentiable, application of the flow field is also a differentiable operation and can be optimized by gradient based optimization methods.
+Since bilinear interpolation is differentiable, application of the flow field is also a differentiable operation and can be optimized by gradient based optimization methods. Visual interpretation of flow field application is shown in Figure \ref{fig:stadv}
+
+\begin{figure}[h]
+    \includegraphics[width=\linewidth]{stadv.png}
+    \caption{Visual representation of application of flow field to generate spatially transformed example. Taken from Xiao et al. \cite{xiao2018spatially}}\label{fig:stadv}
+
+\end{figure}
+
 
 
 
