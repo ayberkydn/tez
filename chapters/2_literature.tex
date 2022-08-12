@@ -118,7 +118,7 @@ Spatial transformations aim to alter the geometry of the input image instead of 
     \mathbf{x}_{\mathrm{adv}}^{(i)}=\sum_{g \in \mathcal{N}\left(u^{(i)}, v^{(i)}\right\rangle} \mathbf{x}^{(q)}\left(1-\left|u^{(i)}-u^{(q)}\right|\right)\left(1-\left|v^{(i)}-v^{(q)}\right|\right)
 \end{equation}
 
-where \(\mathbf{x}_{\mathrm{adv}}^{(i)}\) denotes the value of ith pixel in adversarial image and \(u_{adv}\),\(v_{adv}\) denotes the position of that pixel in 
+where \(\mathbf{x}_{\mathrm{adv}}^{(i)}\) denotes the value of ith pixel in adversarial image and \(u_{adv}\),\(v_{adv}\) denotes the position of that pixel in the adversarial image.
 
 
 Croce et al. argued adding noise to smooth areas of an image causes visible artifacts and proposed "hiding" the perturbations at the locations with high spatial variations such as edges and corners~\cite{croce2019sparse}. As seen from Figure \ref{fig:diff}, perturbations made with our method naturally occurs in the places with high variations since it is based on local spatial transforms.
