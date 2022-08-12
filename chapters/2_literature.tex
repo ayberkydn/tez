@@ -98,33 +98,67 @@ YUV is often considered as the analog counterpart of \(YC_{b}C_{r}\). There is n
 CIELAB colorspace~\cite{schanda2007colorimetry} defined by the International Commission on Illumination (CIE) has the following three components: L, \(a^*\) and \(b^*\). L is perceptual lightness where \(L = 0\) and \(L* = 100\) define a black and a white pixel, respectively, regardless of the \(a^*\) and \(b^*\) values. \(a^*\) and \(b^*\) dimensions are the chroma components. They are designed to be perceptually uniform where a numerical change in pixel value corresponds to a similar change in human perception ~\cite{mahy1992luminancevschroma}. Both chroma components are in the range \([-127, 127]\). Unlike \(YC_{b}C_{r}\), CIELAB space does not have a linear relationship with RGB space. In fact, conversion to an intermediary space CIEXYZ is needed to transform from RGB to CIELAB and there are different implementations of CIELAB conversion. We used the RGB to CIELAB implementation from Kornia library~\cite{riba2020kornia}, which assumes D65 illuminant and Observer 2.
 
 \section{Perceptual Distance Metrics}
---
-\subsection{Learned Perceptual Image Patch Similarity (LPIPS)}
---
+There is an ongoing research on finding difference metrics over 2D images that aligns with human visual perception, which is challenging due to the nature and lack of knowledge about the human vision. \cite{ding2021comparison}. There are several studies proposing perceptual metrics with different methods. The perceptual metrics used in this thesis is briefly explained.
+
 \subsection{Structural Similarity Index Measure (SSIM)}
---
+Structural Similarity Index Measure is an early method for measuring similarity between two images. Although SSIM is a naive method for measuring difference between two images, it is considered to be a perceptual difference metric since it takes structural information into account. SSIM calculates 3 different comparison measures (luminance, contrast and structure) between two images x and y, which is shown in Equation~\ref{eq:ssim1} where l denotes luminance, c denotes contrast and s denotes structure measure.
+
+\begin{equation}
+    \label{eq:ssim1}
+    \begin{aligned}
+         & l(x, y)=\frac{2 \mu_{: x} \mu_{y}+c_{1}}{\mu_{x}^{2}+\mu_{y}^{2}+c_{1}}           \\
+         & c(x, y)=\frac{2 \sigma_{x} \sigma_{y}+c_{2}}{\sigma_{x}^{2}+\sigma_{y}^{2}+c_{3}} \\
+         & s(x, y)=\frac{\sigma_{x y}+c_{2}/2}{\sigma_{x} \sigma_{y}+c_{2}/2}
+    \end{aligned}
+\end{equation}
+
+with
+\begin{itemize}
+    \item \(\mu_x\): mean of \(x\)
+    \item \(\mu_y\): mean of \(y\)
+    \item \(\sigma_x\): standard deviation of \(x\)
+    \item \(\sigma_y\): standard deviation of \(y\)
+    \item \(\sigma_{xy}\): covariance of \(x\) and \(y\)
+    \item \(L\): \(2^{\#bits per pixel}-1\)
+    \item \(c_1\): \(0.0001 \times L^2\)
+    \item \(c_2\): \(0.0009 \times L^2\)
+\end{itemize}
+
+Using these three measures, SSIM is calculated according to Equation~\ref{eq:ssim2}
+\begin{equation}
+    \label{eq:ssim2}
+    SSIM(x,y) = l(x,y) \times c(x,y) \times s(x,y)
+\end{equation}
+
+Although there are many variations of SSIM, original SSIM and Multi-Scale SSIM (MS-SSIM) are used in this thesis. The difference between SSIM and MS-SSIM is MS-SSIM is computed over multiple scales of the compared images through multiple scales of subsampling.
+
+\subsection{Learned Perceptual Image Patch Similarity (LPIPS)}
+LPIPS is proposed by
+
 \section{Perceptual Quality Preserving Adversarial Attacks}
 
 Utilizing perceptual colorspaces and metrics for imperceptible adversarial example generation is investigated in several studies. Aksoy et al. investigated additive noise based attacks on chrominance channels in YUV colorspace \cite{aksoy2019attack}, which is the analog counterpart of \(YC_{b}C_{r}\) space. Despite Pestana et al. found that adversarial perturbations are more highlighted in luminance channels in terms of the magnitude~\cite{Pestana2020-hm}, Aksoy et al. found that even suppressing the luminance perturbation, additive noise based attack on chrominance channels still successfully fool target networks, yet causes visible distortion. In our earlier work, we also explored spatial transformations to UV channels of YUV to generate imperceptible adversarial examples~\cite{aydin2019imperceptible} and we extend this work by exploring \(YC_{b}C_{r}\) space as well as perceptually uniform CIELAB space and measuring structured similarity metrics such as SSIM~\cite{wang2004image} and MS-SSIM~\cite{wang2003multiscale} between benign images and adversarially generated images. Karli et al. leveraged perceptual metric LPIPS~\cite{zhang2018unreasonable} to improve the quality of adversarial examples. Since LPIPS is a differentiable metric, they used gradient based optimization to minimize LPIPS alongside the adversarial loss. Similarly, Zhao et al. replaced CIEDE2000 perceptual distance metric~\cite{luo2001development} with \(\mathcal{L}_{p}\) norm constraint in Carlini \& Wagner attack to produce perceptually close adversarial examples.
 
+Croce et al. argued adding noise to smooth areas of an image causes visible artifacts and proposed "hiding" the perturbations at the locations with high spatial variations such as edges and corners~\cite{croce2019sparse}. As seen from Figure \ref{fig:diff}, perturbations made with our method naturally occurs in the places with high variations since it is based on local spatial transforms.
+
+Unlike these methods, the attack proposed in this paper does not rely on auxiliary losses or explicit perceptual distance terms in optimization process to produce examples with high perceptual quality. In addition, it does not require regularization, unlike spatial transformation based methods such as ~\cite{xiao2018spatially}, due to its intrinsic imperceptibility. It should be noted that the existing spatial transformation based methods, as well as our work, does not utilize limited degree of freedom transformations such as rotation, translation or scaling that can be formulated as a \(4\times4\) transformation matrix~\cite{jaderberg2015spatial}. In that formulation, the flow field \(f \in \mathbb{R}^{2\times H \times W}\) is calculated using the transformation matrix. Instead, we directly define and optimize flow field, where the number of parameters is equal to twice number of pixels in the input image since there is an x and y component for each pixel.
+%%%%%
+
 \subsection{Spatially Transformed Adversarial Examples}
 
-Spatial transformations as a method for generating adversarial examples was first proposed in ~\cite{xiao2018spatially}, where it is shown that small displacements applied to input pixels can successfully fool a target network. However, using this method, even small displacements could cause visible distortions when the adjacent pixels are drifted towards different directions. As a remedy to this problem, use of  Total Variation~(TV) regularization~\cite{estrela2016total} was proposed. Application of TV regularization to the flow field pushes the neighboring displacement vectors to the same direction and, hence, produces smoother output. Similarly, Jordan et al. combined spatial transformations with \(l_\infty\) bounded attacks to forge stronger attacks with better perceptual quality. 
+Spatial transformations as a method for generating adversarial examples was first proposed in ~\cite{xiao2018spatially}, where it is shown that small displacements applied to input pixels can successfully fool a target network. However, using this method, even small displacements could cause visible distortions when the adjacent pixels are drifted towards different directions. As a remedy to this problem, use of  Total Variation~(TV) regularization~\cite{estrela2016total} was proposed. Application of TV regularization to the flow field pushes the neighboring displacement vectors to the same direction and, hence, produces smoother output. Similarly, Jordan et al. combined spatial transformations with \(l_\infty\) bounded attacks to forge stronger attacks with better perceptual quality.
 
-Spatial transformations aim to alter the geometry of the input image instead of changing the pixel values. To accomplish that, stAdv applies a flow field \(f \in \mathbb{R}^{2\times H \times W}\) whose elements are flow vectors \(f_i\) for each pixel in the adversarial image. The application of flow field to the benign image is formulated in Equation \ref{eq:stadv}
-
+Spatial transformations aim to alter the geometry of the input image instead of changing the pixel values. To accomplish that, stAdv applies a flow field \(f \in \mathbb{R}^{2\times H \times W}\) whose elements are flow vectors (or displacement vectors) \(f_i\) for each pixel in the adversarial image. Since the elements of displacement vectors are not integers, a need for interpolation to sample fractional positions arises. In this work, bilinear interpolation is used since it is a simple and computationally efficient. The application of flow field to the benign image is formulated in Equation \ref{eq:stadv} where \(\mathbf{x}_{\mathrm{adv}}^{(i)}\) denotes the value of i'th pixel in adversarial image and \(u_{adv}\),\(v_{adv}\) denotes the position of that pixel in the adversarial image.
 \begin{equation}
     \label{eq:stadv}
     \mathbf{x}_{\mathrm{adv}}^{(i)}=\sum_{g \in \mathcal{N}\left(u^{(i)}, v^{(i)}\right\rangle} \mathbf{x}^{(q)}\left(1-\left|u^{(i)}-u^{(q)}\right|\right)\left(1-\left|v^{(i)}-v^{(q)}\right|\right)
 \end{equation}
 
-where \(\mathbf{x}_{\mathrm{adv}}^{(i)}\) denotes the value of ith pixel in adversarial image and \(u_{adv}\),\(v_{adv}\) denotes the position of that pixel in the adversarial image.
-
-
-Croce et al. argued adding noise to smooth areas of an image causes visible artifacts and proposed "hiding" the perturbations at the locations with high spatial variations such as edges and corners~\cite{croce2019sparse}. As seen from Figure \ref{fig:diff}, perturbations made with our method naturally occurs in the places with high variations since it is based on local spatial transforms.
+Since bilinear interpolation is differentiable, application of the flow field is also a differentiable operation and can be optimized by gradient based optimization methods.
 
 
 
-Unlike these methods, the attack proposed in this paper does not rely on auxiliary losses or explicit perceptual distance terms in optimization process to produce examples with high perceptual quality. In addition, it does not require regularization, unlike spatial transformation based methods such as ~\cite{xiao2018spatially}, due to its intrinsic imperceptibility. It should be noted that the existing spatial transformation based methods, as well as our work, does not utilize limited degree of freedom transformations such as rotation, translation or scaling that can be formulated as a \(4\times4\) transformation matrix~\cite{jaderberg2015spatial}. In that formulation, the flow field \(f \in \mathbb{R}^{2\times H \times W}\) is calculated using the transformation matrix. Instead, we directly define and optimize flow field, where the number of parameters is equal to twice number of pixels in the input image since there is an x and y component for each pixel. 
+
+
 
 
