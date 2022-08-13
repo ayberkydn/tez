@@ -11,7 +11,9 @@ In this work, we address the problem of creating targeted adversarial examples w
 \RestyleAlgo{ruled}
 \begin{algorithm}[t]
     \caption{Adversarial example generation by spatial transformation in chrominance channels in a perceptual colorspace. }\label{alg1}
-    \KwIn{   \(x\)}
+    \KwIn{   \(x\)
+
+    }
     \KwOut{   \(x_{adv}\)}
     \KwData{
         target\_class,
@@ -21,7 +23,7 @@ In this work, we address the problem of creating targeted adversarial examples w
         max\_iters,
         is\_restricted,
     }
-    \(f \gets initialize flow field f\)\;
+    \(f \sim \mathcal{N}(0,\,\sigma^{2})\)\;
     \(i \gets 0\);
 
     \While{\(i < max\_iters\)}{
