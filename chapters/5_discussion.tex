@@ -30,7 +30,7 @@ To analyze the effect of colorfulness on the attack performance, we calculated t
     \begin{center}
         \includegraphics[width=0.92\linewidth]{plots/color_success.pdf}
     \end{center}
-    \caption{Attack success rate analysis with regards to colorfulness index with \(\kappa=10\) on \(CbCr\) and a*b* channels. Images having colorfulness index less than the \(x\) axis value are excluded in calculation of the success rate. Note that both colorspaces attain very close success rates after around colorfulness index 0.2.} \label{fig:plots}
+    \caption[Attack success rate analysis with regards to colorfulness index with \(\kappa=10\) on \(CbCr\) and a*b* channels.]{Attack success rate analysis with regards to colorfulness index with \(\kappa=10\) on \(CbCr\) and a*b* channels. Images having colorfulness index less than the \(x\) axis value are excluded in calculation of the success rate. Note that both colorspaces attain very close success rates after around colorfulness index 0.2.} \label{fig:plots}
 \end{figure}
 
 %We find that 32 images in the dataset are in grayscale.
@@ -53,7 +53,7 @@ To analyze the effect of colorfulness on the attack performance, we calculated t
     \includegraphics[width=0.328\linewidth]{fails/9.png}
     \includegraphics[width=0.328\linewidth]{fails/4.png}
     \includegraphics[width=0.328\linewidth]{fails/14.png}
-    \caption{Examples from the dataset that our method fails to generate successful adversarial examples from in both \(YC_{b}C_{r}\) and CIELAB spaces, sorted from top bottom by colorfulness amount.}\label{fig:fails}
+    \caption[Examples from the dataset that our method fails to generate successful adversarial examples from in both \(YC_{b}C_{r}\) and CIELAB spaces]{Examples from the dataset that our method fails to generate successful adversarial examples from in both \(YC_{b}C_{r}\) and CIELAB spaces, sorted from top bottom by colorfulness amount.}\label{fig:fails}
 \end{figure}
 
 
@@ -61,6 +61,6 @@ To analyze the effect of colorfulness on the attack performance, we calculated t
     %burasi neden boyle cikiyor henuz cozemedim
     \includegraphics[width=0.495\linewidth]{outofgamut/1.png}
     \includegraphics[width=0.495\linewidth]{outofgamut/2.png}
-    \caption{Examples of visible clipping artifacts of out-of-gamut pixels caused by spatial transform around red-gray borders. Flow magnitude has been scaled up to highlight the visible effects for illustration.}\label{fig:outofgamut}
+    \caption[Examples of visible clipping artifacts of out-of-gamut pixels caused by spatial transform around red-gray borders.]{Examples of visible clipping artifacts of out-of-gamut pixels caused by spatial transform around red-gray borders. Flow magnitude has been scaled up to highlight the visible effects for illustration.}\label{fig:outofgamut}
 \end{figure}
 
