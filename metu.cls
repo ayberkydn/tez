@@ -127,7 +127,7 @@
 \def\@department{}
 \def\@tdepartment{}
 \def\@deptceng{Computer Engineering} \def\@tdeptceng{Bilgisayar Mühendisliği}
-\def\@deptmas{Modelling and Simulation} \def\@tdeptmas{Modelleme ve Simülasyon}
+\def\@deptmas{Modelling and Simulation} \def\@tdeptceng{Modelleme ve Simülasyon}
 
 \def\DeclareDepartment#1{
 	\def\@department{\csname @dept#1\endcsname}

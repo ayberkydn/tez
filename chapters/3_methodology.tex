@@ -1,6 +1,6 @@
 \chapter{Methodology}
 \label{chp:3_methodology}
-In this work, we address the problem of creating targeted adversarial examples without adversarial perturbation being perceptible by human vision. For this purpose, we use a modified version of Spatially Transformed Adversarial Examples~\cite{xiao2018spatially} that perturbs the input image only in the channels that human vision is not sensitive to the spatial information loss in \(YC_{b}C_{r}\) and CIELAB colorspace representations of the input image. 
+In this work, we address the problem of creating targeted adversarial examples without adversarial perturbation being perceptible by human vision. For this purpose, we use a modified version of Spatially Transformed Adversarial Examples~\cite{xiao2018spatially} that perturbs the input image only in the channels that human vision is not sensitive to the spatial information loss in \(YC_{b}C_{r}\) and CIELAB colorspace representations of the input image.
 
 \section{Proposed Method}
 
@@ -14,6 +14,7 @@ The proposed adversarial example generation method is as follows. Let \(x \in \m
 
 \RestyleAlgo{ruled}
 \begin{algorithm}[t]
+    \linespread{1}\selectfont
     \caption{Adversarial example generation by spatial transformation in chrominance channels in a perceptual colorspace. }\label{alg1}
     \KwIn{   \(x\)
 
