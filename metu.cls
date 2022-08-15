@@ -1,5 +1,5 @@
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesClass{metu}[2003/06/20 METU Thesis Class]
+\ProvidesClass{metu}[2019/09/15 METU Thesis Class]
 \RequirePackage[LGR,T1]{fontenc}
 \RequirePackage[overload]{textcase} %OUB: overload is necessary to add label at chapter headings.
 \RequirePackage[utf8]{inputenc}
@@ -9,7 +9,15 @@
 %OUB I have tested against nomencl package. Should work with glossary package. Never tested with other symbol list packages.
 % Not tested against multiple list of symbols (separate list of symbols and abbreviations) . Follow the class code comments for this.
 % Never tested for list of algorithms or other lists. Please report possible bugs.
-\RequirePackage{graphicx}
+
+% rel 2019/09/15 changes:
+% fixed cosupervisor at abstract and Oz pages.. OUB
+% fıxed co-supervisor at approval page.  OUB
+% Added \isodate for approval page date. OUB
+
+% rel 2019/10/07 changes:
+% added options threejury and fivejury(default) to resolve issue forthesis with 3 jury members.
+
 
 
 % Use Times New Roman
@@ -119,11 +127,14 @@
 \def\@department{}
 \def\@tdepartment{}
 \def\@deptceng{Computer Engineering} \def\@tdeptceng{Bilgisayar Mühendisliği}
-\def\@deptis{Information Systems} \def\@tdeptis{Bilişim Sistemleri}
+\def\@deptmas{Modelling and Simulation} \def\@tdeptmas{Modelleme ve Simülasyon}
+
 \def\DeclareDepartment#1{
 	\def\@department{\csname @dept#1\endcsname}
 	\def\@tdepartment{\csname @tdept#1\endcsname}
 }
+
+\DeclareOption{mas}{\DeclareDepartment{mas}}
 \DeclareOption{is}{\DeclareDepartment{is}}
 \DeclareOption{ceng}{\DeclareDepartment{ceng}}
 \DeclareOption{aee}{\DeclareDepartment{aeee}}
@@ -176,11 +187,17 @@
 \DeclareOption{phd}{\p@hdtrue}
 \DeclareOption{ms}{\p@hdfalse}
 
+\newif\ifalljury
+\alljurytrue
+\DeclareOption{fivejury}{\alljurytrue}
+\DeclareOption{threejury}{\alljuryfalse}
+
 %Unspecified input handler
 \DeclareOption*{Invalid Option \CurrentOption }
 
 \ProcessOptions\relax
 %\LoadClass{book}
+
 
 \newif\ifturkish
 \ift@rkish
@@ -209,7 +226,7 @@
 \def\@tableslabel{TABLOLAR}
 \def\@tablelabel{Tablo}
 \def\@titleparta{ORTA DOĞU TEKNİK ÜNİVERSİTESİ\\
-       \MakeUppercase{\expandafter{\@tgraduateschool}}\\
+      \MakeUppercase{\expandafter{\@tgraduateschool}}\\
 	\MakeUppercase{\@tdegree} TEZİ}
 \def\@titlepartb{\MakeUppercase{\@tdepartment}\\
 	ANA BİLİM DALI}
@@ -235,21 +252,23 @@ metinde orjinal olmayan tüm materyal alıntı olarak belirtilmiş ve gerekli re
 \def\@lof{LIST OF FIGURES}
 \def\@loab{LIST OF ABBREVIATIONS}
 \def\@chapterslabel{CHAPTERS}
-\def\@figureslabel{}
-\def\@tableslabel{}
+\def\@figureslabel{FIGURES}
+\def\@tableslabel{TABLES}
 \def\@tablelabel{Table}
 \def\@titleparta{A THESIS SUBMITTED TO\\
-       THE GRADUATE SCHOOL OF \uppercase\expandafter{\@graduateschool} OF\\ THE MIDDLE EAST TECHNICAL UNIVERSITY}
+      THE GRADUATE SCHOOL OF \uppercase\expandafter{\@graduateschool}\\
+      OF\\ MIDDLE EAST TECHNICAL UNIVERSITY}
 \def\@titleseperator{BY}
-\def\@titlepartb{IN PARTIAL FULFILLMENT OF THE REQUIREMENTS FOR THE     DEGREE OF\\
-        \uppercase\expandafter{\@degree}\\
-       IN\\
-       THE DEPARTMENT OF \MakeUppercase{\@department}}
+\def\@titlepartb{IN PARTIAL FULFILLMENT OF THE REQUIREMENTS\\
+      FOR\\ 
+      THE DEGREE OF \uppercase\expandafter{\@degree}\\
+      IN\\
+      \MakeUppercase{\@department}}
 \def\@approvallabel{Approval of the thesis:}
 \def\@approvaltext{submitted by {\bf \MakeUppercase \@author} in partial fulfillment of the
 requirements for the degree of {\bf \@degree~ in \@department~ Department, Middle East
 Technical University} by,}
-\def\@directoraff{Dean, \bf Graduate School of {Informatics}}
+\def\@directoraff{Dean, Graduate School of {\bf Informatics}}
 \def\@chairlabel{Head of Department}
 \def\@supervisorlabel{Supervisor}
 \def\@cosupervisorlabel{Co-supervisor}
@@ -291,7 +310,7 @@ original to this work.}
 \ifpn@top
     \footskip=0cm%
 \else
-    \footskip=30pt\headsep=0cm\headheight=0cm\voffset=1cm
+    \footskip=30pt\headsep=0cm\headheight=0cm
 \fi
 
 %\def\expthr@@#1{%
@@ -320,11 +339,6 @@ original to this work.}
 \let\@tmpcurrentsize=\currentsize \footnotesize \@tmpcurrentsize}
 \def\@prelimsize{\@setsize\@prelimsize{14pt}\xiipt\@xiipt
 \let\currentsize=\@prelimsize}
-
-%burayi lot ve lof'taki bosluklari silmek icin ekledim%
-\newcommand*{\noaddvspace}{\renewcommand*{\addvspace}[1]{}}
-\addtocontents{lof}{\protect\noaddvspace}
-\addtocontents{lot}{\protect\noaddvspace}
 
 \let\f@@tnote\footnote
 \def\footnote#1{\f@@tnote{\singlespacing #1}}
@@ -370,7 +384,7 @@ original to this work.}
 \pagestyle{plain}\normalsize}
 
 \def\approvalpage{\@restonecolfalse\if@twocolumn\@restonecoltrue\onecolumn
- \else \newpage \fi \@prelimsize \pagestyle{empty} \voffset=1cm}
+ \else \newpage \fi \@prelimsize \pagestyle{empty}}
 \def\endapprovalpage{\if@restonecol\twocolumn \else \newpage \fi
 \pagestyle{plain}\normalsize}
 
@@ -399,7 +413,7 @@ original to this work.}
 
 \def\@pnumwidth{1.55em}
 \def\@tocrmarg {2.55em}
-\def\@dotsep{2}
+\def\@dotsep{4.5}
 \setcounter{tocdepth}{6}
 
 \def\tableofcontents{
@@ -447,7 +461,7 @@ original to this work.}
  \def\@chapapp{\vskip1mm APPENDIX}
  \def\thechapter{\Alph{chapter}}}
 
-\def\listoffigures{\singlespacing
+\def\listoffigures{\oneandhalfspacing
 \@restonecolfalse\if@twocolumn\@restonecoltrue\onecolumn
  \fi\prechapter*{\vskip-2mm \@lof\@mkboth
  {\@lof}{\@lof}}
@@ -457,7 +471,7 @@ original to this work.}
  \twocolumn\fi\newpage }
 \def\l@figure{\@myfiguredottedtocline{1}{0em}{3.0em}}
 
-\def\listoftables{\singlespacing
+\def\listoftables{\oneandhalfspacing
 \@restonecolfalse\if@twocolumn\@restonecoltrue\onecolumn
  \fi\prechapter*{\vskip-2mm \@lot\@mkboth
  {\@lot}{\@lot}}
@@ -505,7 +519,7 @@ original to this work.}
 
 \def\@themybib[#1]#2{\def\@symb@l{#1} \ifx\@symb@l\empty
  \def\@symb@l{REFERENCES} \fi
- \singlespacing \@restonecolfalse\if@twocolumn\@restonecoltrue\onecolumn\fi
+ \oneandhalfspacing \@restonecolfalse\if@twocolumn\@restonecoltrue\onecolumn\fi
  \chapter*{\vskip-3mm \uppercase\expandafter{\@symb@l}
  \@mkboth{\uppercase{\@symb@l}}{\uppercase{\@symb@l}}}
   \addcontentsline{toc}{leads}{\protect\numberline {}\uppercase{REFERENCES}}
@@ -562,7 +576,7 @@ to\hsize{\hfil\box\@tempboxa\hfil}
  \fi \ifmy@t@ble \vskip 20pt\fi}
 
 \newcounter{illustration}[chapter]
-\def\theillustration{\@arabic\c@illustration}
+\def\theillustration{\thechapter.\@arabic\c@illustration}
 \def\fps@illustration{tbp}
 \def\ftype@illustration{3}
 \def\ext@illustration{loi}
@@ -572,24 +586,24 @@ to\hsize{\hfil\box\@tempboxa\hfil}
 \@namedef{illustration*}{\@dblfloat{illustration}}
 \@namedef{endillustration*}{\end@dblfloat}
 
-\newcounter{figure}
-\def\thefigure{\@arabic\c@figure}
+\newcounter{figure}[chapter]
+\def\thefigure{\thechapter.\@arabic\c@figure}
 \def\fps@figure{tbp}
 \def\ftype@figure{1}
 \def\ext@figure{lof}
 \def\fnum@figure{Figure \thefigure}
-\def\figure{\singlespacing \my@figur@true \@float{figure}}
+\def\figure{\oneandhalfspacing \my@figur@true \@float{figure}}
 \let\endfigure\end@float
 \@namedef{figure*}{\@float{figure}}
 \@namedef{endfigure*}{\end@float}
 
-\newcounter{table}
-\def\thetable{\@arabic\c@table}
+\newcounter{table}[chapter]
+\def\thetable{\thechapter.\@arabic\c@table}
 \def\fps@table{tbp}
 \def\ftype@table{2}
 \def\ext@table{lot}
 \def\fnum@table{\@tablelabel\space\thetable}
-\def\table{\singlespacing \my@t@bletrue \@float{table}}
+\def\table{\oneandhalfspacing \my@t@bletrue \@float{table}}
 \let\endtable\end@float
 \@namedef{table*}{\@float{table}}
 \@namedef{endtable*}{\end@float}
@@ -606,6 +620,18 @@ to\hsize{\hfil\box\@tempboxa\hfil}
 \def\@degree{Master of Science}
 \def\@tdegree{Yüksek Lisans}
 \fi
+
+% \def\@graduateschool{Informatics}
+% \def\@tgraduateschool{Enformatik Enstitüsü}
+% \ifp@hd
+% \def\@shortdegree{Ph.D.}
+% \def\@degree{Doctor of Philosophy}
+% \def\@tdegree{Doktora}
+% \else
+% \def\@shortdegree{M.S.}
+% \def\@degree{Master of Science}
+% \def\@tdegree{Yüksek Lisans}
+% \fi
 
 \def\department#1{\def\@department{#1}}
 \def\@departmentofsupervisor{}\def\departmentofsupervisor#1{\def\@departmentofsupervisor{#1}}
@@ -685,45 +711,18 @@ to\hsize{\hfil\box\@tempboxa\hfil}
 \def\keywords#1{\def\@keywords{#1}}
 \def\@anahtarklm{} \def\anahtarklm#1{\def\@anahtarklm{#1}}
 
-%\def\maketitle{\begin{titlepage}\normalsize
-%\let\footnotesize\small \let\footnoterule\relax \setcounter{page}{1}
-%\null \nointerlineskip
-%\vskip 0.8cm \begin{center} \nointerlineskip
-% \vbox{\singlespacing \MakeUppercase{\@disptitle}}
-%\vskip 4.5cm plus0pt minus1cm \nointerlineskip
-% \vbox{\singlespacing \@titleparta}
-%\vskip 1.85cm plus0pt minus2mm \nointerlineskip
-% \vbox{\@titleseperator}
-%\vskip 1.85cm plus0pt minus2mm \nointerlineskip
-% \vbox{\expandafter{\MakeUppercase{\@author}}}
-%\vskip 5cm plus0pt minus1cm \nointerlineskip
-% \vbox{\singlespacing \@titlepartb}
-%\vskip 5cm plus0pt minus1cm \nointerlineskip
-%\vspace{\stretch{1}}
-% \vbox{
-%\ifx\kernel@date\@date
-%	\ift@rkish\MakeUppercase{\@tdate}\else\MakeUppercase{\@date}\fi
-%	\else
-%	\ift@rkish\@datetoturuc{\@date}\else\MakeUppercase{\@date}\fi
-%	\fi
-%} \end{center}
-%\end{titlepage}
-%\setcounter{footnote}{0} \let\thanks\relax
-%\gdef\@thanks{}\let\maketitle\relax}
-
-
 \def\maketitle{\begin{titlepage}\normalsize
-\let\footnotesize\small \let\footnoterule\relax \setcounter{page}{-1}\voffset=1cm
+\let\footnotesize\small \let\footnoterule\relax \setcounter{page}{1}
 \null \nointerlineskip
 \vskip 0.8cm \begin{center} \nointerlineskip
  \vbox{\singlespacing \MakeUppercase{\@disptitle}}
 \vskip 4.5cm plus0pt minus1cm \nointerlineskip
  \vbox{\singlespacing \@titleparta}
-%\vskip 1.85cm plus0pt minus2mm \nointerlineskip
+\vskip 1.85cm plus0pt minus2mm \nointerlineskip
  \vbox{\@titleseperator}
 \vskip 1.85cm plus0pt minus2mm \nointerlineskip
  \vbox{\expandafter{\MakeUppercase{\@author}}}
-\vskip 3cm plus0pt minus1cm \nointerlineskip
+\vskip 5cm plus0pt minus1cm \nointerlineskip
  \vbox{\singlespacing \@titlepartb}
 \vskip 5cm plus0pt minus1cm \nointerlineskip
 \vspace{\stretch{1}}
@@ -741,35 +740,33 @@ to\hsize{\hfil\box\@tempboxa\hfil}
 \def\makeapproval{\begin{approvalpage} \normalsize \parskip \z@
 \parskip \z@ \topsep \z@ \partopsep \z@ \parsep \z@ \itemsep \z@
 \null \nointerlineskip \parindent=0pt
-%\vskip1.0cm plus0pt minus2mm \nointerlineskip
-%\parbox[t]{15cm}{\begin{center} \@approvallabel\end{center}}
-%\sdvskip1.0cm plus0pt minus2mm \nointerlineskip
-%\parbox[t]{15cm}{\begin{center}\singlespacing \bf{\MakeUppercase{\@disptitle}}\end{center}}
-\parbox[t]{15cm}{\begin{center}\singlespacing \bf{\@disptitle}\end{center}}
+\vskip0.78cm plus0pt minus2mm \nointerlineskip
+\parbox[t]{14.3cm}{\begin{center} \@approvallabel\end{center}}
+\vskip1.0cm plus0pt minus2mm \nointerlineskip
+\parbox[t]{14.3cm}{\begin{center}\singlespacing \bf{\MakeUppercase{\@disptitle}}\end{center}}
 \vskip2.0cm plus0pt minus2mm \nointerlineskip
-\parbox[t]{14.5cm}{\singlespacing \@approvaltext}
+\parbox[t]{14.3cm}{\singlespacing \@approvaltext}
 \vskip1.5cm plus0pt minus2mm \nointerlineskip
-\vbox{\parbox[t]{11cm}{\singlespacing \expthr@@{\@director}\\
-      \@directoraff} \hfill
-      \parbox[t]{3cm}{\singlespacing \begin{center}
-      \rule{3cm}{1pt} \\
-      \end{center}\nointerlineskip}}
-\vskip0.5cm plus0pt minus2mm \nointerlineskip
- \vbox{\parbox{11cm}{\singlespacing \expthr@@{\@headofdept}\\
-	\@chairlabel, {\bf \expthr@@{\@dispdepartment}}} \hfill \parbox{3cm}{\singlespacing \begin{center}
-                      \rule{3cm}{1pt}
-                      \end{center}\nointerlineskip}}
+\vbox{\parbox[t]{14.25cm}{\singlespacing \expthr@@{\@director}\\  \@directoraff 
+\hfill \rule{3cm}{1pt}}}
+\vskip0.5cm plus0pt minus20mm \nointerlineskip
+ \vbox{\parbox{14.25cm}{\singlespacing \expthr@@{\@headofdept}\\
+	\@chairlabel, {\bf \expthr@@{\@dispdepartment}}
+                      \hfill \rule{3cm}{1pt}
+                      }}
 \vskip0.5cm plus0pt minus2mm \nointerlineskip
 \vbox{
-		\parbox{11cm}{\singlespacing \expthr@@{\@dispsupervisor}\\
-		\@supervisorlabel, {\bf \expthr@@{\@dispdepartmentofsupervisor}}} \hfill \parbox{3cm}{\singlespacing \begin{center}
+		\parbox{14.25cm}{\singlespacing \expthr@@{\@dispsupervisor}\\
+		\@supervisorlabel, {\bf \expthr@@{\@dispdepartmentofsupervisor}} \hfill
                       \rule{3cm}{1pt}
-                      \end{center}\nointerlineskip}}
+                      }}
 \vskip0.5cm plus0pt minus2mm \nointerlineskip
 \ifexist@co
-  \vbox{
-  \parbox{11cm}{\singlespacing \expthr@@{\@cosupervisor}\\ \@cosupervisorlabel, {\bf
-\expthr@@{\@dispdepartmentofcosupervisor}}} \hfill \parbox{3cm}{\singlespacing \begin{center} \rule{3cm}{1pt} \end{center}\nointerlineskip}}
+ \vbox{
+		\parbox{14.25cm}{\singlespacing \expthr@@{\@dispcosupervisor}\\
+		\@cosupervisorlabel, {\bf \expthr@@{\@dispdepartmentofcosupervisor}} \hfill
+                      \rule{3cm}{1pt}
+                      }}
 \else
   \vbox{\parbox{11cm}{~\\~} \hfill \parbox{3cm}{~\\~}}
 \fi
@@ -784,21 +781,19 @@ to\hsize{\hfil\box\@tempboxa\hfil}
 \vskip0.5cm plus0pt minus2mm \nointerlineskip
  \vbox{\parbox{14.25cm}{\singlespacing \expthr@@{\@dispcommitteememberiii \\ \expthr@@{\@dispaffiliationiii}}
  \hfill \rule{3cm}{1pt}}}
+\ifalljury
 \vskip0.5cm plus0pt minus2mm \nointerlineskip
- \vbox{\parbox{14.25cm}{\singlespacing \expthr@@{\@dispcommitteememberiv \\ \expthr@@{\@dispaffiliationiv}}
- \hfill \rule{3cm}{1pt}}}
+\vbox{\parbox{14.25cm}{\singlespacing \expthr@@{\@dispcommitteememberiv \\ \expthr@@{\@dispaffiliationiv}}
+\hfill \rule{3cm}{1pt}}}
 \vskip0.5cm plus0pt minus2mm \nointerlineskip
- \vbox{\parbox{14.25cm}{\singlespacing \expthr@@{\@dispcommitteememberv \\ \expthr@@{\@dispaffiliationv}}
- \hfill \rule{3cm}{1pt}}}
+\vbox{\parbox{14.25cm}{\singlespacing \expthr@@{\@dispcommitteememberv \\ \expthr@@{\@dispaffiliationv}}
+\hfill \rule{3cm}{1pt}}}
+\else
+\fi
 \vskip1.5cm plus0pt minus2mm \nointerlineskip
- \vbox{\parbox{14.25cm}{\bf
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\@datelabel:
- %\hfill \rule{3cm}{1pt}}}
- ~~~28.08.2019}} % Change this
+ \vbox{\parbox{14.25cm}{\hfill \@datelabel:  
+ \hspace{7em}}}
 \end{approvalpage}
-
-\newpage\null\thispagestyle{empty}\newpage
-
 \gdef\@director{}\let\director\relax
 \gdef\@headofdept{}\let\headofdept\relax
 \gdef\@degree{}
@@ -846,11 +841,14 @@ to\hsize{\hfil\box\@tempboxa\hfil}
  \begin{tabular}{c}
  \@tdegree, {\@tdepartment} Bölümü\\[0.2cm]
  Tez Y\"{o}neticisi: \expthr@@{\@turkishsupervisor} \\[0.2cm]
- \ifexist@co Ortak Tez Y\"{o}neticisi: \expthr@@{\@turkishcosupervisor}\fi \\[0.2cm]
+ \ifexist@co 
+  Ortak Tez Y\"{o}neticisi: \expthr@@{\@turkishcosupervisor} \\
+ \fi \\[0.2cm]
 \end{tabular}
-\vskip \baselineskip \ifx\@date\kernel@date \@tdate \else \@datetotur{\@date}\fi, \pageref{LastPage} sayfa\end{center}
+\vskip \baselineskip \ifx\@date\kernel@date \@tdate \else \@datetotur{\@date} \fi, \pageref{LastPage} sayfa\end{center}
 \vskip \baselineskip \oneandhalfspacing
-\ifd@uble\doublespacing\else\ifs@ngle\singlespacing\else\oneandhalfspacing\fi\fi
+% \ifd@uble\doublespacing\else\ifs@ngle\singlespacing\else\oneandhalfspacing\fi\fi% Deniz: uncomment if you cannot make the abstract single spaced 
+\singlespacing
 \@oztext}
 \def\endshowoz{\vskip 1.5\baselineskip \par \noindent Anahtar Kelimeler: \@anahtarklm
 \gdef\@anahtarklm{}\let\anahtarklm\relax
@@ -859,7 +857,7 @@ to\hsize{\hfil\box\@tempboxa\hfil}
 \gdef\@ttitle{}\let\turkishtitle\relax
 \gdef\@supervisor{}\let\supervisor\relax
 \gdef\@cosupervisor{}\let\cosupervisor\relax
-\if@restonecol \twocolumn\fi\singlespacing\newpage
+\if@restonecol \twocolumn\fi\oneandhalfspacing\newpage
 \ift@rkish\relax\else\selectlanguage{english}\fi }
 
 \newcommand{\abstract}[1]{\newcommand{\@abstracttext}{#1}}
@@ -884,11 +882,14 @@ to\hsize{\hfil\box\@tempboxa\hfil}
  \begin{tabular}{c}
  \@shortdegree, Department of \@department \\[0.2cm]
  Supervisor: \expthr@@{\@supervisor} \\[0.2cm]
- \ifexist@co Co-Supervisor: \expthr@@{\@cosupervisor}\fi\\[0.2cm]
+ \ifexist@co 
+    Co-Supervisor: \expthr@@{\@cosupervisor} \\[0.2cm]
+ \fi
 \end{tabular}
 \vskip \baselineskip \@date, \pageref{LastPage} pages\end{center}
 \vskip \baselineskip 
-\ifd@uble\doublespacing\else\ifs@ngle\singlespacing\else\oneandhalfspacing\fi\fi
+% \ifd@uble\doublespacing\else\ifs@ngle\singlespacing\else\oneandhalfspacing\fi\fi % Deniz: uncomment if you cannot make the abstract single spaced 
+\singlespacing
 \@abstracttext}
 
 \def\endshowabstract{
@@ -904,7 +905,6 @@ to\hsize{\hfil\box\@tempboxa\hfil}
 \def\showdedication{
 \begin{center}\null
 \vspace*{\fill}
-\addcontentsline{toc}{leads}{\protect\numberline {}DEDICATION}
 \ift@rkish
 \@tdedicationtext
 \else
@@ -930,8 +930,8 @@ to\hsize{\hfil\box\@tempboxa\hfil}
 \begin{flushleft}
 \hfill{
 \begin{tabular}{l@{}ll}
-\bf{\@plagirismnametext} & \bf{:} & \bf{\@author} \\[1cm]
-\bf{\@plagirismsignaturetext} & \bf{:} &
+\textnormal{\@plagirismnametext} & \textnormal{:} & \textnormal\bf{\@author} \\[1cm]
+\textnormal{\@plagirismsignaturetext} & \textnormal{:} &
 \end{tabular}
 }
 \vspace*{\fill}
@@ -1033,6 +1033,7 @@ to\hsize{\hfil\box\@tempboxa\hfil}
 \def\@disptitle{\@ttitle}
 \def\@dispdepartment{\@tdepartment}
 \def\@dispsupervisor{\@turkishsupervisor}
+\def\@dispcosupervisor{\@turkishcosupervisor}
 \def\@dispdepartmentofsupervisor{\@ifundefined{@turkishdepartmentofsupervisor}{\@departmentofsupervisor}{\@turkishdepartmentofsupervisor}}
 \def\@dispdepartmentofcosupervisor{\@ifundefined{@turkishdepartmentofcosupervisor}{\@departmentofcosupervisor}{\@turkishdepartmentofcosupervisor}}
 \def\@dispaffiliationi{\@taffiliationi}
@@ -1050,6 +1051,7 @@ to\hsize{\hfil\box\@tempboxa\hfil}
 \def\@disptitle{\@title}
 \def\@dispdepartment{\@department}
 \def\@dispsupervisor{\@supervisor}
+\def\@dispcosupervisor{\@cosupervisor}
 \def\@dispdepartmentofsupervisor{\@departmentofsupervisor}
 \def\@dispdepartmentofcosupervisor{\@departmentofcosupervisor}
 \def\@dispaffiliationi{\@affiliationi}
@@ -1064,9 +1066,8 @@ to\hsize{\hfil\box\@tempboxa\hfil}
 \def\@dispcommitteememberv{\@committeememberv}
 \fi
 \maketitle
-%\newpage
-%\thispagestyle{empty}
-%\addtocounter{page}{-1}
+\newpage
+\thispagestyle{empty}
 \mbox{}
 \makeapproval
 \plagiarism
@@ -1143,9 +1144,7 @@ to\hsize{\hfil\box\@tempboxa\hfil}
 \def\chaptermark##1{\markboth {\uppercase{\ifnum \c@secnumdepth >\m@ne
  \@chapapp\ \thechapter \ \fi ##1}}{}}%
 \def\sectionmark##1{\markright {\uppercase{\ifnum \c@secnumdepth >\z@
- \thesection. \ \fi ##1}}}
-    \clubpenalty10000\widowpenalty10000
-}
+ \thesection. \ \fi ##1}}}}
 
 \def\ps@plain{\let\@mkboth\markboth
 \def\@evenfoot{\hbox{} \hfil \rm\thepage \hfil} \let\@oddfoot=\@evenfoot%
@@ -1153,9 +1152,7 @@ to\hsize{\hfil\box\@tempboxa\hfil}
 \def\chaptermark##1{\markboth {\uppercase{\ifnum \c@secnumdepth >\m@ne
  \@chapapp\ \thechapter \ \fi ##1}}{}}%
 \def\sectionmark##1{\markright {\uppercase{\ifnum \c@secnumdepth >\z@
- \thesection. \ \fi ##1}}}
-    \clubpenalty10000\widowpenalty10000
-}
+ \thesection. \ \fi ##1}}}}
 
 \def\ps@myheadings{\let\@mkboth\@gobbletwo
 \def\@oddhead{\hbox{}\sl\rightmark \hfil
@@ -1175,17 +1172,19 @@ to\hsize{\hfil\box\@tempboxa\hfil}
 \let\kernel@date\today
 \let\@tdate\bugun
 
+\def\isodate{\number\day.\number\month.\number\year}
+
 \let\orighead\@makechapterhead
 \renewcommand*{\@makechapterhead}[1]{\orighead{\MakeUppercase{#1}}}
 
-%\@addtoreset{equation}{chapter}
-%\def\theequation{\thechapter\arabic{equation}}
-\def\theequation{\arabic{equation}}
+
+\@addtoreset{equation}{chapter}
+\def\theequation{\thechapter.\arabic{equation}}
 
 \ifpn@top \pagestyle{headings} \else \pagestyle{plain} \fi
 \pagenumbering{arabic} \onecolumn
 
-\textheight=22.5cm
+\textheight=23.5cm
 
 \uccode`@=`I \lccode`@="10
 
