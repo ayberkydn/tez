@@ -1117,7 +1117,7 @@ to\hsize{\hfil\box\@tempboxa\hfil}
 \fi}
 \def\l@algocf{\@myalgodottedtocline{1}{0em}{2.0em}}
 \makeatother
-\listofalgorithms
+% \listofalgorithms
 \fi
 }%
 \def\endpreliminaries{
