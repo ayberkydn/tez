@@ -14,7 +14,6 @@ The proposed adversarial example generation method is as follows. Let \(x \in \m
 
 \RestyleAlgo{ruled}
 \begin{algorithm}[t]
-    \linespread{1}\selectfont
     \caption{Adversarial example generation by spatial transformation in chrominance channels in a perceptual colorspace. }\label{alg1}
     \KwIn{   \(x\)
 
@@ -56,10 +55,12 @@ The proposed adversarial example generation method is as follows. Let \(x \in \m
     }
 \end{algorithm}
 
-\subsection{Application of flow field}
+\subsection{Application of Flow Field}
 Flow field is applied to the benign image following the methodology in~\cite{xiao2018spatially} also explained in Chapter~\ref{chp:2_literature}. For each pixel in adversarial image \(i_{adv}\), corresponding flow field vector value \(p_{i,j}\) is added to the pixel location. Then, the corresponding pixel at the added location is sampled. Since the added location is not an integer, bilinear interpolation is used to sample from the fractional pixel locations. Bilinear interpolation also makes the method end-to-end differentiable, thus optimizable by gradient based optimizers.
 %\subsubsection{Restricting the flow field}
-Chroma subsampling effectively causes the same chroma values to be used by the neighboring pixels, and it is widely accepted to cause negligible changes to the images. Accordingly, to exploit this fact, we can impose a restriction to the flow field to keep its values in the range \((-1, 1)\). We initialize a pre-flow field \(f_{pre}\) and calculate the applied flow field as \(f = \tanh(f_{pre})\). This differentiable reparameterization~\cite{mordvintsev2018differentiable} of flow field constraints the flow field magnitude to be smaller than 1 without inhibiting end-to-end differentiability so that chrominance value of each pixel of the adversarial image \(x_{adv}\) is only affected by the value of the pixel of the same location in \(x\) and its neighboring pixels. %With this modification, chroma subsampling becomes a very effective defense method to the subpixel restricted variant our attack without making any visually perceptible changes, as discussed in Section~\refeq{section:discussion}.
+
+\subsection{Subpixel Restriction of Flow Field}
+As mentioned in Chapter~\ref{chp:1_introduction}, chroma subsampling effectively causes the same chroma values to be used in the neighboring pixels by removing the local variation of chrominance. This method is widely used in visual lossy compression standards since the resolution loss in chrominance components of an image often does not cause any artifacts visible by a human observer. Accordingly, to exploit this fact, we can impose a restriction to the flow field to keep its values in the range \((-1, 1)\). We initialize a pre-flow field \(f_{pre}\) and calculate the applied flow field as \(f = \tanh(f_{pre})\). This differentiable reparameterization~\cite{mordvintsev2018differentiable} of flow field constraints the flow field magnitude to be smaller than 1 without inhibiting end-to-end differentiability so that chrominance value of each pixel of the adversarial image \(x_{adv}\) is only affected by the value of the pixel of the same location in \(x\) and its neighboring pixels. %With this modification, chroma subsampling becomes a very effective defense method to the subpixel restricted variant our attack without making any visually perceptible changes, as discussed in Section~\refeq{section:discussion}.
 To make the adversarially perturbed images indistinguishable from their benign counterparts, the flow field is applied only to the channels that human vision is not very sensitive to~\cite{vorobyev2004ecology}. Since widely used RGB colorspace is not designed to be a perceptual colorspace, even small spatial perturbations to any RGB channel creates visually distinguishable changes. Hence, we first convert the benign image to a perceptual colorspace such as \(YC_{b}C_{r}\) where human vision is not sensitive to the spatial perturbations in, which is \(C_{b}\) and \(C_{r}\) in \(YC_{b}C_{r}\), and \(a^*\) and \(b^*\) in CIELAB colorspace. Then, we apply the flow field only to the channels Cb and Cr in \(YC_{b}C_{r}\), and A and B in CIELAB colorspace.
 
 

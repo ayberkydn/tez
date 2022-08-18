@@ -2,7 +2,7 @@
 \label{chp:4_results}
 \section{Dataset}
 
-We used the dataset and the provided model from NIPS 2017 Competition on Adversarial Attacks and Defenses~\cite{kurakin2018adversarial} to evaluate our method. NIPS 2017 dataset is a collection of 1000 images curated by Google Brain with a resolution of \(299 \times 299\) with their corresponding true and target classes from Imagenet~\cite{deng2009imagenet} dataset. For the target network, we used Inception-v3~\cite{szegedy2016rethinking} architecture and Imagenet trained checkpoint provided with the dataset.
+We used the dataset and the provided model from NIPS 2017 Competition on Adversarial Attacks and Defenses~\cite{kurakin2018adversarial} to evaluate our method. NIPS 2017 dataset is a collection of 1000 images curated by Google Brain with a resolution of \(299 \times 299\) with their corresponding true and target classes from Imagenet~\cite{deng2009imagenet} dataset. For the target network, we used Inception-v3~\cite{szegedy2016rethinking} architecture and Imagenet trained checkpoint provided with the dataset. Since this architecture accepts \(299 \times 299\) images by default, no resize or crop is necessary for preprocessing.
 \section{Experimental Evaluation}
 We conducted our experiments in a white-box setup where the gradients are fully available. Experiments have been done in a targeted attack setting with the dataset provided targets. We optimized using Adam~\cite{kingma2015adam} with the default settings and used Carlini \& Wagner loss~\cite{carlini2017towards} with a confidence margin of \(\kappa \in \left\{ 0, 10 \right\}\).
 

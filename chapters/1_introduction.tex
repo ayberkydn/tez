@@ -78,9 +78,10 @@ We employ these observations to derive a new type of adversarial attack based on
 
 The main findings of this thesis is published in a paper~\cite{aydin2019imperceptible} and the subject matter is further extended and elaborated in this thesis. The contributions of this work can be summarized as following;
 \begin{itemize}
-    \item Utilization of the findings of human vision and ideas from image and video compression to make imperceptible changes on images without any \(L_p\) norm restriction or regularization.
-    \item A novel method to generate adversarial examples with little to no perceptual distortion by applying spatial transformations in chroma channels of perceptual colorspaces.
-    \item Colorfulness analysis of NIPS2017 Adversarial Challenge dataset.
+    \item Utilization of the findings of human vision and ideas from image and video compression to make imperceptible changes on images without any explicit \(L_p\) norm restriction.
+    \item A novel method to generate adversarial examples with little to no perceptual distortion by applying spatial transformations in chroma channels of perceptual colorspaces optimized by widely used gradient-based optimizers without requiring any regularization term in the loss function.
+    \item Modification of the proposed method to restrict the flow magnitude to have subpixel spatial drifts to further improve perceptual quality with a performance trade-off.
+    \item Colorfulness analysis of NIPS2017 Adversarial Challenge dataset and effect of the colorfulness of input image to the performance of proposed methods.
 \end{itemize}
 
 \section{Organization of the Thesis}
