@@ -110,7 +110,7 @@ YUV is often considered as the analog counterpart of \(YC_{b}C_{r}\). There is n
 CIE 1931 XYZ (CIEXYZ) colorspace was proposed by International Commission of Illumination (CIE) in 1931 after a series of human experiments on color perception. There are three components, namely X, Y and Z. While Y denotes the luma component, there is no independent representations of XZ components and these components together represent possible chrominance values for given Y value.
 CIELAB colorspace~\cite{schanda2007colorimetry} defined by the International Commission on Illumination (CIE) has the following three components: L, \(a^*\) and \(b^*\). L is perceptual lightness where \(L = 0\) and \(L* = 100\) define a black and a white pixel, respectively, regardless of the \(a^*\) and \(b^*\) values. \(a^*\) and \(b^*\) dimensions are the chroma components. They are designed to be perceptually uniform where a numerical change in pixel value corresponds to a similar change in human perception ~\cite{mahy1992luminancevschroma}. Both chroma components are in the range \([-127, 127]\). Unlike \(YC_{b}C_{r}\), CIELAB space does not have a linear relationship with RGB space. In fact, conversion to an intermediary space CIEXYZ is needed to transform from RGB to CIELAB and there are different implementations of CIELAB conversion. We used the RGB to CIELAB implementation from Kornia library~\cite{riba2020kornia}, which assumes D65 illuminant and Observer 2.
 
-\section{Perceptual Distance Metrics}
+\section{Perceptual Distance Metrics and Similarity Measures}
 There is an ongoing research on finding difference metrics over 2D images that aligns with human visual perception, which is challenging due to the nature and lack of knowledge about the human vision. \cite{ding2021comparison}. There are several studies proposing perceptual metrics with different methods. The perceptual metrics used in this thesis is briefly explained.
 
 \subsection{Structural Similarity Index Measure (SSIM)}
@@ -168,13 +168,13 @@ Spatial transformations aim to alter the geometry of the input image instead of 
     \mathbf{x}_{\mathrm{adv}}^{(i)}=\sum_{g \in \mathcal{N}\left(u^{(i)}, v^{(i)}\right\rangle} \mathbf{x}^{(q)}\left(1-\left|u^{(i)}-u^{(q)}\right|\right)\left(1-\left|v^{(i)}-v^{(q)}\right|\right)
 \end{equation}
 
-Since bilinear interpolation is differentiable, application of the flow field is also a differentiable operation and can be optimized by gradient based optimization methods. Visual interpretation of flow field application is shown in Figure \ref{fig:stadv}
+Since bilinear interpolation is differentiable, application of the flow field is also a differentiable operation and can be optimized by gradient based optimization methods. %Visual interpretation of flow field application is shown in Figure \ref{fig:stadv}
 
-\begin{figure}[h]
-    \includegraphics[width=\linewidth]{stadv.png}
-    \caption{Visual representation of application of flow field to generate spatially transformed example. Taken from Xiao et al. \cite{xiao2018spatially}}\label{fig:stadv}
+% \begin{figure}[h]
+%     \includegraphics[width=\linewidth]{stadv.png}
+%     \caption{Visual representation of application of flow field to generate spatially transformed example. Taken from Xiao et al. \cite{xiao2018spatially}}\label{fig:stadv}
 
-\end{figure}
+% \end{figure}
 
 Carlini \& Wagner loss in Equation~\ref{eq:cw2} with a Total Variation regularization term \(\mathcal{L}_{flow}\) for flow field \(f\) to reduce the high frequency pixel drift distortion is minimized for adversarial optimization. The TV loss term is shown in Equation~\ref{eq:tv}. The optimization is made with L-BFGS~\cite{liu1989limited} with linear backtracking, however the authors have stated that Adam~\cite{kingma2015adam} optimizer could be used as well.
 
