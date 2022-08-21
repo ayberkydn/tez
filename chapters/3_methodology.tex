@@ -6,6 +6,7 @@ In this work, we address the problem of creating targeted adversarial examples w
 
 The proposed adversarial example generation method is as follows. Let \(x \in \mathbb{R}^{3\times H \times W}\) be the 3-channel input image, where \(H, W\) are the height and the width of the image, respectively. First, we randomly initialize a flow field \(f \in \mathbb{R}^{2\times H \times W}\) where a two-dimensional vector exists for each pixel location of the adversarial image \(x_{adv}\). Then, we apply the flow field to the benign image as explained below to obtain the adversarial image. Then, we feed the adversarial image to the target network and backpropagate the loss gradient to the flow field. Since the flow field application is a differentiable process, it can be optimized by stochastic gradient descent and variants such as Adam~\cite{kingma2015adam} or L-BFGS\cite{liu1989limited}. The optimization process is repeated until the attack is successful or the maximum iteration count is reached. Visual illustration of the adversarial image generation methodology is shown in Figure~\ref{fig:algorithm}. The pixel values of the output image are calculated by sampling the pixels from the input image from the positions according to the flow field \(f\) using Equation~\ref{eq:spatialflow} and applying bilinear interpolation formula shown in Equation~\ref{eq:stadv}, where \(u^{i}\) and \(u_{adv}^{i}\) denotes the corresponding pixel locations of benign and adversarial image, and \(\Delta u^i\) and \(\Delta v^i\) denotes the values of the flow vector at that position of flow field \(f\), respectively.
 
+
 \begin{equation}
     \label{eq:spatialflow}
     \begin{split}
@@ -18,7 +19,7 @@ The proposed adversarial example generation method is as follows. Let \(x \in \m
 \begin{figure*}[t]
     \centering
     \includegraphics[width=0.8\linewidth]{illustration/drawing.eps}
-    \caption[Visual illustration of the proposed adversarial example generation method.]{Visual illustration of the proposed adversarial example generation method. Luminance and chrominance channels are Y and \(C_{b}C_{r}\) when \(YC_{b}C_{r}\) colorspace and L and \(a^*b^*\) when CIELAB colorspace is used. Visual representation of flow field, subpixel restriction by \(\tanh\) and conversion of concatenated image back to RGB colorspace is omitted for brevity.}\label{fig:algorithm}
+    \caption[Visual illustration of the proposed adversarial example generation method. ]{Visual illustration of the proposed adversarial example generation method. Luminance and chrominance channels are Y and \(C_{b}C_{r}\) when \(YC_{b}C_{r}\) colorspace and L and \(a^*b^*\) when CIELAB colorspace is used. Visual representation of flow field, subpixel restriction by \(\tanh\) and conversion of concatenated image back to RGB colorspace is omitted for brevity.}\label{fig:algorithm}
 \end{figure*}
 
 \RestyleAlgo{ruled}
@@ -77,4 +78,7 @@ As mentioned in Chapter~\ref{chp:1_introduction}, chroma subsampling effectively
 
 % In many multimedia compression standards such as JPEG and MPEG, chroma components are usually subsampled to compress information without making visually perceptible changes.
 
+\section{Implementation Details}
+Flow field application is implemented in PyTorch~\cite{torch}, a scientific computation library for Python that has features facilitating automatic differentiation and Graphical Processing Unit (GPU) computation support which makes it suitable for deep learning applications.
+Initial flow field is randomly initialized from normal distribution with \(\mu = 0\) and \(\sigma = 0.01\). A common problem with stochastic gradient based optimizers is they are prone to be stuck in local minima. To mitigate this issue in our situation, a batch of randomly initialized flow fields is used instead of a singular one due to the fact that the gradient signal is only provided from the pixels of the direction of flow vectors. By using flow field batches, we effectively optimize many flow fields to maximize the performance. We used 32 batch size since it optimizes the utilization of our GPU, which is NVIDIA GTX 1080Ti with 8 GB of Video Random Access Memory (VRAM). For adversarial optimization of flow field, we used Adam optimizer~\cite{kingma2015adam} with learning rate \(\gamma = 0.001, \beta_1 = 0.9, \beta_2 = 0.99, \epsilon = 10^{-8}\).
 

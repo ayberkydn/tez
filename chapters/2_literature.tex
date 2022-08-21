@@ -8,8 +8,15 @@ The concept of adversarial examples were introduced by Szegedy et al.~\cite{szeg
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=\linewidth]{fgsm_panda_image.png}
-    \caption{Visual illustration of adversarial examples. Taken from Goodfellow et al.~\cite{goodfellow2014explaining}}\label{fig:advexample}
+    \begin{subfigure}{\linewidth}
+        \includegraphics[width=\linewidth]{illustration/adv_illus.eps}
+        \caption{}
+    \end{subfigure}
+    \begin{subfigure}{\linewidth}
+        \includegraphics[width=\linewidth]{illustration/adv_illus_copy.pdf}
+        \caption{}
+    \end{subfigure}
+    \caption[Visual illustration of adversarial examples. ]{Visual illustration of (a) targeted and (b) untargeted adversarial examples. In this example, FGSM is illustrated for its simplicity.}
 \end{figure}
 
 
@@ -28,7 +35,6 @@ Adversarial attacks can be formally defined as a constrained optimization proble
 The equation simply indicates that the adversary is aiming to maximize a loss function of the adversarial image and the target label with the norm of the perturbation is upper bounded by \(\epsilon\). In an untargeted attack setup, the function is a single argument function of the adversarial image.
 
 Since naively trained models are vulnerable to adversarial perturbations, the concept of adversarial robustness gained importance and several adversarial robustness methods and benchmarks have been introduced ~\cite{madry2017towards,shafahi2019adversarial,shafahi2018adversarial,tramer2017ensemble,ross2018improving}. In adversarial training, the datapoints are sampled from both the original training set and on-the-fly generated adversarial images. Although the training time significantly increases, since adversarial example generation needs at least one forward and backward pass on the model, this method has been shown to increase the adversarial robustness of the trained model. Also, the concept of universal adversarial perturbations is being investigated after DNNs have been found to be vulnerable to perturbations that is independent of the input image.~\cite{sen2021training}
-
 \section{Adversarial Example Generation Methods}\label{section:methods}
 There are several methods for adversarial example generation and the most popular ones are explained in this section. The variables used in this section are defined as follows;
 \begin{itemize}
